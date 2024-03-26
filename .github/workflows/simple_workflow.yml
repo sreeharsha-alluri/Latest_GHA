@@ -17,9 +17,18 @@ jobs:
         shell: bash
         run: echo "Testing"
 
-      #- name: Error  
-      #  shell: bash
-      #  run: exit 1  
+      # - name: Error  
+      #   shell: bash
+      #   run: exit 1  
+
+      - name: Determine Job Status
+        id: check_status
+        run: |
+          if [[ ${{ success() }} == 'true' ]]; then
+            echo "::set-output name=status::PASS"
+          else
+            echo "::set-output name=status::FAIL"
+          fi
 
       - name: Checkout repository
         if: always()
@@ -34,4 +43,4 @@ jobs:
           error-mention-name: ${{ secrets.ERROR_MENTION_NAME }}
           success-mention-id: ${{ secrets.SUCCESS_MENTION_ID }}
           success-mention-name: ${{ secrets.SUCCESS_MENTION_NAME }}
-          
+          job-status: ${{ steps.check_status.outputs.status }}  # Pass dynamically fetched status
