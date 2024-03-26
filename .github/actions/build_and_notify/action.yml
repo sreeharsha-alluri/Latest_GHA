@@ -26,6 +26,7 @@ runs:
 
     - name: Set error flag if any step fails
       id: error
+      shell: bash
       run: echo "Error occurred"
       if: failure()
 
