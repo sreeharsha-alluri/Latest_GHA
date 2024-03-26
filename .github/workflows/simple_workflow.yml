@@ -17,22 +17,27 @@ jobs:
         shell: bash
         run: echo "Testing"
 
-      # - name: Error  
-      #   shell: bash
-      #   run: exit 1  
-
-      - name: Determine Job Status
-        id: check_status
-        run: |
-          if [[ ${{ success() }} == 'true' ]]; then
-            echo "::set-output name=status::PASS"
-          else
-            echo "::set-output name=status::FAIL"
-          fi
+      - name: Error  
+        shell: bash
+        run: exit 1  
 
       - name: Checkout repository
         if: always()
         uses: actions/checkout@v2
+
+      - name: Determine Job Status
+        id: check_status
+        run: |
+          echo "Job status: ${{ job.status }}"
+          if [ ${{ job.status }} == 'completed' ]; then
+            if [ ${{ job.outcome }} == 'success' ]; then
+              echo "::set-output name=status::PASS"
+            else
+              echo "::set-output name=status::FAIL"
+            fi
+          else
+            echo "::set-output name=status::IN_PROGRESS"
+          fi
 
       - name: Notify Build Status
         if: always()
