@@ -13,6 +13,10 @@ jobs:
         shell: bash
         run: echo "Building"
 
+      # - name: Error
+      #   shell: bash
+      #   run: exit 1
+
       - name: Checkout repository
         if: always()
         uses: actions/checkout@v2
@@ -34,7 +38,7 @@ jobs:
             echo "Job status: In Progress"
             echo "::set-output name=status::IN_PROGRESS"
           fi
-
+      
       - name: Notify Build Status
         if: always()
         uses: ./.github/actions/build_and_notify
