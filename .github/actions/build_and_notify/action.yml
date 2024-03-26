@@ -1,4 +1,4 @@
-name: 'Build and Notify' 
+name: 'Build and Notify'
 description: 'Composite action for building and notifying'
 
 inputs:
@@ -17,21 +17,6 @@ inputs:
   success-mention-name:
     description: 'Name for mentioning in case of success'
     required: true
-  job-status:
-    description: 'Status of the job (PASS or FAIL)'
-    required: true
-  repository-url:
-    description: 'URL of the repository'
-    required: true
-  build-number:
-    description: 'Build number of the workflow run'
-    required: true
-  branch-name:
-    description: 'Branch name of the workflow run'
-    required: true
-  latest-commit:
-    description: 'Latest commit of the workflow run'
-    required: true
 
 runs:
   using: 'composite'
@@ -39,27 +24,46 @@ runs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Send notification to Microsoft Teams
+    - name: Get commit information
+      id: commit_info
       shell: bash
       run: |
+        COMMIT_HASH=$(git rev-parse HEAD)
+        BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
+        echo "::set-output name=commit_hash::$COMMIT_HASH"
+        echo "::set-output name=branch_name::$BRANCH_NAME"
+
+    - name: Send notification to Microsoft Teams
+      shell: bash
+      if: always()
+      run: |
+        # Get the GitHub workflow run URL
         JOB_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
         
-        echo "Received job status: ${{ inputs.job-status }}"
+        # Get the commit information from previous step
+        COMMIT_HASH=${{ steps.commit_info.outputs.commit_hash }}
+        BRANCH_NAME=${{ steps.commit_info.outputs.branch_name }}
         
-        if [[ "${{ inputs.job-status }}" == "PASS" ]]; then
-          echo "Job status is PASS"
-          status="PASS ✅"
-          color="good"
-          mentionedId="${{ inputs.success-mention-id }}"
-          mentionedName="${{ inputs.success-mention-name }}"
-        else
-          echo "Job status is FAIL"
+        # Get the repository URL
+        REPO_URL="[${{ github.repository }}](${{ github.event.repository.html_url }})"
+        
+        # Get the build number
+        BUILD_NUMBER="${{ github.run_number }}"
+        
+        # Determine the job status
+        if [ -n "${{ steps.error }}" ]; then
           status="FAIL ❌"
           color="attention"
           mentionedId="${{ inputs.error-mention-id }}"
           mentionedName="${{ inputs.error-mention-name }}"
+        else
+          status="PASS ✅"
+          color="good"
+          mentionedId="${{ inputs.success-mention-id }}"
+          mentionedName="${{ inputs.success-mention-name }}"
         fi
         
+        # Generate the payload for the notification
         payload='{
           "type": "message",
           "attachments": [
@@ -90,22 +94,22 @@ runs:
                   },
                   {
                     "type": "TextBlock",
-                    "text": "**Repository URL:** ${{ inputs.repository-url }}",
+                    "text": "**Repository URL:** '"$REPO_URL"'",
                     "color": "'"$color"'"
                   },
                   {
                     "type": "TextBlock",
-                    "text": "**Build Number:** ${{ inputs.build-number }}",
+                    "text": "**Build Number:** '"$BUILD_NUMBER"'",
                     "color": "'"$color"'"
                   },
                   {
                     "type": "TextBlock",
-                    "text": "**Branch Name:** ${{ inputs.branch-name }}",
+                    "text": "**Branch Name:** '"$BRANCH_NAME"'",
                     "color": "'"$color"'"
                   },
                   {
                     "type": "TextBlock",
-                    "text": "**Latest Commit:** ${{ inputs.latest-commit }}",
+                    "text": "**Latest Commit:** '"$COMMIT_HASH"'",
                     "color": "'"$color"'"
                   }
                 ],
@@ -125,5 +129,6 @@ runs:
             }
           ]
         }'
-
+        
+        # Send the payload to Microsoft Teams
         echo "$payload" | curl -X POST -H 'Content-Type: application/json' -d @- 'https://amdcloud.webhook.office.com/webhookb2/133d4f16-689b-4281-a94b-44725b948c77@3dd8961f-e488-4e60-8e11-a82d994e183d/IncomingWebhook/20c43fc799fd49e9813582813c638323/f9e22351-f1c9-494f-88c5-8e04accf2ffe'
