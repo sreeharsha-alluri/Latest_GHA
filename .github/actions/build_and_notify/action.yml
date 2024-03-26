@@ -69,7 +69,7 @@ runs:
           color="default"
         fi
         
-        # Get the commit information from previous step
+        # Get the commit information from the previous step
         COMMIT_HASH=${{ steps.commit_info.outputs.commit_hash }}
         BRANCH_NAME=${{ steps.commit_info.outputs.branch_name }}
         
