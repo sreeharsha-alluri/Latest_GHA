@@ -41,6 +41,7 @@ runs:
         echo "::set-output name=branch_name::$BRANCH_NAME"
 
     - name: Set success flag if all steps pass
+      shell: bash
       id: success
       if: success() && !cancelled()
       run: echo "All steps passed"
