@@ -110,7 +110,7 @@ runs:
 
     - name: Send success notification to Microsoft Teams (on success)
       if: ${{ success() && failure() != true }}
-      shell: bash
+      shell: bash 
       run: |
         JOB_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
         
