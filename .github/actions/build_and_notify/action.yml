@@ -24,19 +24,31 @@ runs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Build
+    - name: Get commit information
+      id: commit_info
       shell: bash
-      run: echo "Building"
-
-    - name: Test
-      shell: bash
-      run: echo "Testing"
+      run: |
+        COMMIT_HASH=$(git rev-parse HEAD)
+        BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
+        echo "::set-output name=commit_hash::$COMMIT_HASH"
+        echo "::set-output name=branch_name::$BRANCH_NAME"
 
     - name: Send notification to Microsoft Teams
       shell: bash
+      if: always()
       run: |
         # Get the GitHub workflow run URL
         JOB_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+        
+        # Get the commit information from previous step
+        COMMIT_HASH=${{ steps.commit_info.outputs.commit_hash }}
+        BRANCH_NAME=${{ steps.commit_info.outputs.branch_name }}
+        
+        # Get the repository URL
+        REPO_URL="[${{ github.repository }}](${{ github.event.repository.html_url }})"
+        
+        # Get the build number
+        BUILD_NUMBER="${{ github.run_number }}"
         
         # Determine the job status
         if [ -n "${{ steps.error }}" ]; then
@@ -78,6 +90,26 @@ runs:
                   {
                     "type": "TextBlock",
                     "text": "**Status:** '"$status"'",
+                    "color": "'"$color"'"
+                  },
+                  {
+                    "type": "TextBlock",
+                    "text": "**Repository URL:** '"$REPO_URL"'",
+                    "color": "'"$color"'"
+                  },
+                  {
+                    "type": "TextBlock",
+                    "text": "**Build Number:** '"$BUILD_NUMBER"'",
+                    "color": "'"$color"'"
+                  },
+                  {
+                    "type": "TextBlock",
+                    "text": "**Branch Name:** '"$BRANCH_NAME"'",
+                    "color": "'"$color"'"
+                  },
+                  {
+                    "type": "TextBlock",
+                    "text": "**Latest Commit:** '"$COMMIT_HASH"'",
                     "color": "'"$color"'"
                   }
                 ],
