@@ -22,9 +22,11 @@ jobs:
         run: exit 1  
 
       - name: Checkout repository
+        if: always()
         uses: actions/checkout@v2
 
       - name: Notify Build Status
+        if: always()
         uses: ./.github/actions/build_and_notify
         with:
           webhook-url: ${{ secrets.WEBHOOK_URL }}
