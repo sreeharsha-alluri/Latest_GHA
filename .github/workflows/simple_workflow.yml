@@ -13,10 +13,6 @@ jobs:
         shell: bash
         run: echo "Building"
 
-      # - name: Error
-      #   shell: bash
-      #   run: exit 1
-
       - name: Checkout repository
         if: always()
         uses: actions/checkout@v2
@@ -26,8 +22,8 @@ jobs:
         if: always()
         run: |
           echo "Job status: ${{ job.status }}"
-          if [ ${{ job.status }} == 'completed' ]; then
-            if [ ${{ job.outcome }} == 'success' ]; then
+          if [ "${{ job.status }}" == 'completed' ]; then
+            if [ "${{ job.conclusion }}" == 'success' ]; then
               echo "Job outcome: Success"
               echo "::set-output name=status::PASS"
             else
