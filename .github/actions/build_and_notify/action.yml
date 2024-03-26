@@ -24,7 +24,7 @@ runs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Send notification to Microsoft Teams
+    - name: Send notification to Microsoft Teams (on failure)
       if: ${{ failure() }}
       shell: bash
       run: |
@@ -108,7 +108,7 @@ runs:
 
         echo "$payload" | curl -X POST -H 'Content-Type: application/json' -d @- '${{ inputs.webhook-url }}'
 
-    - name: Send success notification to Microsoft Teams
+    - name: Send success notification to Microsoft Teams (on success)
       if: ${{ success() }}
       shell: bash
       run: |
