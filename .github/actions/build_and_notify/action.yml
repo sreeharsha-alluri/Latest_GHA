@@ -34,6 +34,7 @@ runs:
         
         echo "Received job status: ${{ inputs.job-status }}"
         
+        # Check if the status is PASS
         if [[ "${{ inputs.job-status }}" == "PASS" ]]; then
           echo "Job status is PASS"
           status="PASS ✅"
@@ -41,6 +42,7 @@ runs:
           mentionedId="${{ inputs.success-mention-id }}"
           mentionedName="${{ inputs.success-mention-name }}"
         else
+          # If not PASS, consider it as FAIL
           echo "Job status is FAIL"
           status="FAIL ❌"
           color="attention"
