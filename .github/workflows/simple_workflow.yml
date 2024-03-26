@@ -25,6 +25,18 @@ jobs:
         if: always()
         uses: actions/checkout@v2
 
+      - name: Debug Job Status
+        run: |
+          echo "Job status: ${{ job.status }}"
+          echo "Job outcome: ${{ job.outcome }}"
+          echo "Steps status: ${{ job.steps }}"
+          echo "Event name: ${{ github.event_name }}"
+          echo "Ref: ${{ github.ref }}"
+          echo "SHA: ${{ github.sha }}"
+          echo "Run ID: ${{ github.run_id }}"
+          echo "Repository URL: ${{ github.repository }}"
+          echo "Workflow: ${{ github.workflow }}"
+
       - name: Notify Build Status
         if: always()
         uses: ./.github/actions/build_and_notify
