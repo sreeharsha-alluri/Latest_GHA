@@ -13,6 +13,10 @@ jobs:
         shell: bash
         run: echo "Building"
 
+      # - name: Error
+      #   shell: bash
+      #   run: exit 1
+
       - name: Checkout repository
         if: always()
         uses: actions/checkout@v2
@@ -45,4 +49,4 @@ jobs:
           error-mention-name: ${{ secrets.ERROR_MENTION_NAME }}
           success-mention-id: ${{ secrets.SUCCESS_MENTION_ID }}
           success-mention-name: ${{ secrets.SUCCESS_MENTION_NAME }}
-          job-status: ${{ steps.check_status.outputs.status }}
+          job-status: ${{ steps.check_status.outputs.status }}  # Pass dynamically fetched status
