@@ -33,11 +33,6 @@ runs:
         echo "::set-output name=commit_hash::$COMMIT_HASH"
         echo "::set-output name=branch_name::$BRANCH_NAME"
 
-    - name: Set success flag if all steps pass
-      shell: bash
-      id: success
-      run: echo "All steps passed"
-
     - name: Send notification to Microsoft Teams
       shell: bash
       run: |
