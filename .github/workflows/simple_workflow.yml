@@ -26,6 +26,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Debug Job Status
+        if: always()
         run: |
           echo "Job status: ${{ job.status }}"
           echo "Job outcome: ${{ job.outcome }}"
