@@ -1,4 +1,4 @@
-name: 'Build and Notify'  
+name: 'Build and Notify' 
 description: 'Composite action for building and notifying'
 
 inputs:
@@ -34,7 +34,6 @@ runs:
         
         echo "Received job status: ${{ inputs.job-status }}"
         
-        # Determine the color and status message based on the job status
         if [[ "${{ inputs.job-status }}" == "PASS" ]]; then
           echo "Job status is PASS"
           status="PASS ✅"
@@ -49,7 +48,6 @@ runs:
           mentionedName="${{ inputs.error-mention-name }}"
         fi
         
-        # Construct the payload for Microsoft Teams notification
         payload='{
           "type": "message",
           "attachments": [
@@ -96,5 +94,4 @@ runs:
           ]
         }'
 
-        # Send the payload to the Microsoft Teams webhook
         echo "$payload" | curl -X POST -H 'Content-Type: application/json' -d @- 'https://amdcloud.webhook.office.com/webhookb2/133d4f16-689b-4281-a94b-44725b948c77@3dd8961f-e488-4e60-8e11-a82d994e183d/IncomingWebhook/20c43fc799fd49e9813582813c638323/f9e22351-f1c9-494f-88c5-8e04accf2ffe'
