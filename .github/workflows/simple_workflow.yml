@@ -25,19 +25,24 @@ jobs:
         if: always()
         uses: actions/checkout@v2
 
-      - name: Debug Job Status
+      - name: Determine Job Status
+        id: check_status
         if: always()
         run: |
           echo "Job status: ${{ job.status }}"
-          echo "Job outcome: ${{ job.outcome }}"
-          echo "Steps status: ${{ job.steps }}"
-          echo "Event name: ${{ github.event_name }}"
-          echo "Ref: ${{ github.ref }}"
-          echo "SHA: ${{ github.sha }}"
-          echo "Run ID: ${{ github.run_id }}"
-          echo "Repository URL: ${{ github.repository }}"
-          echo "Workflow: ${{ github.workflow }}"
-
+          if [ ${{ job.status }} == 'completed' ]; then
+            if [ ${{ job.conclusion }} == 'success' ]; then
+              echo "Job outcome: Success"
+              echo "::set-output name=status::PASS"
+            else
+              echo "Job outcome: Failure"
+              echo "::set-output name=status::FAIL"
+            fi
+          else
+            echo "Job status: In Progress"
+            echo "::set-output name=status::IN_PROGRESS"
+          fi
+      
       - name: Notify Build Status
         if: always()
         uses: ./.github/actions/build_and_notify
@@ -47,3 +52,4 @@ jobs:
           error-mention-name: ${{ secrets.ERROR_MENTION_NAME }}
           success-mention-id: ${{ secrets.SUCCESS_MENTION_ID }}
           success-mention-name: ${{ secrets.SUCCESS_MENTION_NAME }}
+          job-status: ${{ steps.check_status.outputs.status }}
