@@ -24,16 +24,7 @@ runs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Set error flag if any step fails
-      id: error
-      run: |
-        if [ ${{ failure() }} ]; then
-          echo "Error occurred"
-          exit 1
-        fi
-        
     - name: Get commit information
-      shell: bash
       id: commit_info
       run: |
         COMMIT_HASH=$(git rev-parse HEAD)
@@ -42,28 +33,23 @@ runs:
         echo "::set-output name=branch_name::$BRANCH_NAME"
 
     - name: Set success flag if all steps pass
-      shell: bash
       id: success
       run: echo "All steps passed"
 
     - name: Send notification to Microsoft Teams
-      shell: bash
       run: |
         JOB_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
         
-        if [ -n "${{ steps.error.outputs.result }}" ]; then
+        if [ $? -ne 0 ]; then
           status="FAIL ❌"
           color="attention"
           mentionedId="${{ inputs.error-mention-id }}"
           mentionedName="${{ inputs.error-mention-name }}"
-        elif [ -n "${{ steps.success.outputs.result }}" ]; then
+        else
           status="PASS ✅"
           color="good"
           mentionedId="${{ inputs.success-mention-id }}"
           mentionedName="${{ inputs.success-mention-name }}"
-        else
-          status="UNKNOWN"
-          color="default"
         fi
         
         COMMIT_HASH="${{ steps.commit_info.outputs.commit_hash }}"
