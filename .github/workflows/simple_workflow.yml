@@ -27,6 +27,7 @@ jobs:
 
       - name: Determine Job Status
         id: check_status
+        if: always()
         run: |
           echo "Job status: ${{ job.status }}"
           if [ ${{ job.status }} == 'completed' ]; then
