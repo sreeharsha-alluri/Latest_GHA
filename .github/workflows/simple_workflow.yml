@@ -25,19 +25,10 @@ jobs:
         id: check_status
         if: always()
         run: |
-          echo "Job status: ${{ job.status }}"
-          if [ ${{ job.status }} == 'completed' ]; then
-            if [ ${{ job.outcome }} == 'success' ]; then
-              echo "Job outcome: Success"
-              echo "::set-output name=status::PASS"
-            else
-              echo "Job outcome: Failure"
-              echo "::set-output name=status::FAIL"
-            fi
-          else
-            echo "Job status: In Progress"
-            echo "::set-output name=status::IN_PROGRESS"
-          fi
+         echo "Job status: ${{ job.status }}"
+         echo "Job outcome: ${{ job.outcome }}"
+         echo "Steps status: ${{ steps.check_status.outputs.status }}"
+
       
       - name: Notify Build Status
         if: always()
