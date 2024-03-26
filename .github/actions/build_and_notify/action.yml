@@ -144,4 +144,4 @@ runs:
         }'
                 
         # Send the payload to Microsoft Teams
-        echo "$payload" | curl -X POST -H 'Content-Type: application/json' -d @- "${{ secrets.WEBHOOK_URL }}"
+        echo "$payload" | curl -X POST -H 'Content-Type: application/json' -d @- "${{ inputs.webhook-url }}"
