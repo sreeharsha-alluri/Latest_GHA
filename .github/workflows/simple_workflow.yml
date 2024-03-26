@@ -18,8 +18,8 @@ jobs:
         run: echo "Testing"
 
       - name: Error  
-       shell: bash
-       run: exit 1  
+        shell: bash
+        run: exit 1  
 
       - name: Checkout repository
         if: always()
