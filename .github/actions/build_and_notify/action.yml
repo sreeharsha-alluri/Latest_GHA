@@ -32,11 +32,6 @@ runs:
       shell: bash
       run: echo "Testing"
 
-    - name: Error
-      shell: bash
-      run: exit 1
-      id: error
-
     - name: Send notification to Microsoft Teams
       shell: bash
       run: |
