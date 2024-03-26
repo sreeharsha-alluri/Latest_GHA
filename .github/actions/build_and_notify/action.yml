@@ -30,9 +30,10 @@ runs:
     - name: Send notification to Microsoft Teams
       shell: bash
       run: |
+        set -x  # Enable debugging output
         JOB_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
         
-        echo "Job status: ${{ inputs.job-status }}"
+        echo "Received job status: ${{ inputs.job-status }}"  # Log the received job status
         
         if [[ "${{ inputs.job-status }}" == "PASS" ]]; then
           echo "Job status is PASS"
