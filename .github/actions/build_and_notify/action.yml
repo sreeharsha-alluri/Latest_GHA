@@ -1,4 +1,4 @@
-name: 'Build and Notify'
+name: 'Build and Notify' 
 description: 'Composite action for building and notifying'
 
 inputs:
