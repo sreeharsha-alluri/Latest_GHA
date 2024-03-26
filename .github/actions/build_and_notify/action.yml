@@ -32,12 +32,16 @@ runs:
       run: |
         JOB_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
         
+        echo "Job status: ${{ inputs.job-status }}"
+        
         if [[ "${{ inputs.job-status }}" == "PASS" ]]; then
+          echo "Job status is PASS"
           status="PASS ✅"
           color="good"
           mentionedId="${{ inputs.success-mention-id }}"
           mentionedName="${{ inputs.success-mention-name }}"
         else
+          echo "Job status is FAIL"
           status="FAIL ❌"
           color="attention"
           mentionedId="${{ inputs.error-mention-id }}"
