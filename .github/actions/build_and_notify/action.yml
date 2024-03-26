@@ -25,14 +25,13 @@ runs:
       uses: actions/checkout@v2
 
     - name: Set error flag if any step fails
-      shell: bash
       id: error
       run: |
-        if [ -n "$?" ]; then
+        if [ ${{ failure() }} ]; then
           echo "Error occurred"
           exit 1
         fi
-
+        
     - name: Get commit information
       shell: bash
       id: commit_info
