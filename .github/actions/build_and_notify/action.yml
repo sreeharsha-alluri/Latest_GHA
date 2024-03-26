@@ -17,6 +17,9 @@ inputs:
   success-mention-name:
     description: 'Name for mentioning in case of success'
     required: true
+  job-status:
+    description: 'Status of the job (PASS or FAIL)'
+    required: true
 
 runs:
   using: 'composite'
@@ -24,99 +27,22 @@ runs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Send notification to Microsoft Teams (on failure)
-      if: ${{ failure() }}
+    - name: Send notification to Microsoft Teams
       shell: bash
       run: |
         JOB_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
         
-        status="FAIL ❌"
-        color="attention"
-        mentionedId="${{ inputs.error-mention-id }}"
-        mentionedName="${{ inputs.error-mention-name }}"
-        
-        COMMIT_HASH="${{ github.sha }}"
-        BRANCH_NAME="${{ github.ref }}"
-        REPO_URL="[${{ github.repository }}](${{ github.event.repository.html_url }})"
-        BUILD_NUMBER="${{ github.run_number }}"
-        
-        payload='{
-          "type": "message",
-          "attachments": [
-            {
-              "contentType": "application/vnd.microsoft.card.adaptive",
-              "content": {
-                "type": "AdaptiveCard",
-                "body": [
-                  {
-                    "type": "TextBlock",
-                    "text": "<at>'"$mentionedName"'</at>",
-                    "color": "'"$color"'"
-                  },
-                  {
-                    "type": "TextBlock",
-                    "text": "**Job Name:** Build and Notify",
-                    "color": "'"$color"'"
-                  },
-                  {
-                    "type": "TextBlock",
-                    "text": "**Job URL:** [View Job]('"$JOB_URL"')",
-                    "color": "'"$color"'"
-                  },
-                  {
-                    "type": "TextBlock",
-                    "text": "**Status:** '"$status"'",
-                    "color": "'"$color"'"
-                  },
-                  {
-                    "type": "TextBlock",
-                    "text": "**Repository URL:** '"$REPO_URL"'",
-                    "color": "'"$color"'"
-                  },
-                  {
-                    "type": "TextBlock",
-                    "text": "**Build Number:** '"$BUILD_NUMBER"'",
-                    "color": "'"$color"'"
-                  },
-                  {
-                    "type": "TextBlock",
-                    "text": "**Branch Name:** '"$BRANCH_NAME"'",
-                    "color": "'"$color"'"
-                  },
-                  {
-                    "type": "TextBlock",
-                    "text": "**Latest Commit:** '"$COMMIT_HASH"'",
-                    "color": "'"$color"'"
-                  }
-                ],
-                "msteams": {
-                  "entities": [
-                    {
-                      "type": "mention",
-                      "text": "<at>'"$mentionedName"'</at>",
-                      "mentioned": {
-                        "id": "'"$mentionedId"'",
-                        "name": "'"$mentionedName"'"
-                      }
-                    }
-                  ]
-                }
-              }
-            }
-          ]
-        }'
-        echo "$payload" | curl -X POST -H 'Content-Type: application/json' -d @- 'https://amdcloud.webhook.office.com/webhookb2/133d4f16-689b-4281-a94b-44725b948c77@3dd8961f-e488-4e60-8e11-a82d994e183d/IncomingWebhook/20c43fc799fd49e9813582813c638323/f9e22351-f1c9-494f-88c5-8e04accf2ffe'
-   
-    - name: Send success notification to Microsoft Teams (on success)
-      if: ${{ success() }}
-      shell: bash 
-      run: |
-        JOB_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-        
-        status="PASS ✅"
-        color="good"
-        mentionedId="${{ inputs.success-mention-id }}"
-        mentionedName="${{ inputs.success-mention-name }}"
+        if [[ "${{ inputs.job-status }}" == "PASS" ]]; then
+          status="PASS ✅"
+          color="good"
+          mentionedId="${{ inputs.success-mention-id }}"
+          mentionedName="${{ inputs.success-mention-name }}"
+        else
+          status="FAIL ❌"
+          color="attention"
+          mentionedId="${{ inputs.error-mention-id }}"
+          mentionedName="${{ inputs.error-mention-name }}"
+        fi
         
         COMMIT_HASH="${{ github.sha }}"
         BRANCH_NAME="${{ github.ref }}"
