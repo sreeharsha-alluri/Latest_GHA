@@ -1,50 +1,15 @@
-name: Simple Workflow
- 
+name: 'Simple Workflow'
+
 on:
   push:
     branches:
       - main
- 
+
 jobs:
   build-test-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Build
-        shell: bash
-        run: echo "Building"
-
-      - name: Test
-        shell: bash
-        run: echo "Testing"
-
-      - name: Error
-        shell: bash
-        run: exit 1
-
-      - name: Checkout repository
-        if: always()
-        uses: actions/checkout@v2
-
-      - name: Determine Job Status
-        id: check_status
-        if: always()
-        run: |
-          echo "Job status: ${{ job.status }}"
-          if [ ${{ job.status }} == 'completed' ]; then
-            if [ ${{ job.conclusion }} == 'success' ]; then
-              echo "Job outcome: Success"
-              echo "::set-output name=status::PASS"
-            else
-              echo "Job outcome: Failure"
-              echo "::set-output name=status::FAIL"
-            fi
-          else
-            echo "Job status: In Progress"
-            echo "::set-output name=status::IN_PROGRESS"
-          fi
-      
-      - name: Notify Build Status
-        if: always()
+      - name: Build and Notify
         uses: ./.github/actions/build_and_notify
         with:
           webhook-url: ${{ secrets.WEBHOOK_URL }}
@@ -52,4 +17,3 @@ jobs:
           error-mention-name: ${{ secrets.ERROR_MENTION_NAME }}
           success-mention-id: ${{ secrets.SUCCESS_MENTION_ID }}
           success-mention-name: ${{ secrets.SUCCESS_MENTION_NAME }}
-          job-status: ${{ steps.check_status.outputs.status }}
