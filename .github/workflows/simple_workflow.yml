@@ -22,11 +22,9 @@ jobs:
         run: exit 1  
 
       - name: Checkout repository
-        if: always()
         uses: actions/checkout@v2
 
       - name: Notify Build Status
-        if: always()
         uses: ./.github/actions/build_and_notify
         with:
           webhook-url: ${{ secrets.WEBHOOK_URL }}
@@ -34,4 +32,4 @@ jobs:
           error-mention-name: ${{ secrets.ERROR_MENTION_NAME }}
           success-mention-id: ${{ secrets.SUCCESS_MENTION_ID }}
           success-mention-name: ${{ secrets.SUCCESS_MENTION_NAME }}
-          job-url: ${{ github.run_url }}  # Providing the GitHub workflow run URL as input
+          webhook-url: ${{ github.run_url }}  # Corrected input name
