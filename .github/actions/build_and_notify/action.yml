@@ -25,6 +25,7 @@ runs:
       uses: actions/checkout@v2
 
     - name: Get commit information
+      shell: bash
       id: commit_info
       run: |
         COMMIT_HASH=$(git rev-parse HEAD)
@@ -33,10 +34,12 @@ runs:
         echo "::set-output name=branch_name::$BRANCH_NAME"
 
     - name: Set success flag if all steps pass
+      shell: bash
       id: success
       run: echo "All steps passed"
 
     - name: Send notification to Microsoft Teams
+      shell: bash
       run: |
         JOB_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
         
