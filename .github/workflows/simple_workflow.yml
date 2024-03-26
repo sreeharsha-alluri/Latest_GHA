@@ -35,9 +35,6 @@ jobs:
             echo "::set-output name=status::IN_PROGRESS"
           fi
       
-      - name: Debug Job Status
-        run: |
-          echo "Job status passed to action: ${{ steps.check_status.outputs.status }}"
       - name: Notify Build Status
         if: always()
         uses: ./.github/actions/build_and_notify
@@ -47,4 +44,8 @@ jobs:
           error-mention-name: ${{ secrets.ERROR_MENTION_NAME }}
           success-mention-id: ${{ secrets.SUCCESS_MENTION_ID }}
           success-mention-name: ${{ secrets.SUCCESS_MENTION_NAME }}
-          job-status: ${{ steps.check_status.outputs.status }}
+          job-status: ${{ steps.check_status.outputs.status }}  # Pass dynamically fetched status
+          repository-url: ${{ github.repository }}  # Pass repository URL
+          build-number: ${{ github.run_number }}  # Pass build number
+          branch-name: ${{ github.ref }}  # Pass branch name
+          latest-commit: ${{ github.sha }}  # Pass latest commit
