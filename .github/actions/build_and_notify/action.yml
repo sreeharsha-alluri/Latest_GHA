@@ -20,6 +20,18 @@ inputs:
   job-status:
     description: 'Status of the job (PASS or FAIL)'
     required: true
+  repository-url:
+    description: 'URL of the repository'
+    required: true
+  build-number:
+    description: 'Build number of the workflow run'
+    required: true
+  branch-name:
+    description: 'Branch name of the workflow run'
+    required: true
+  latest-commit:
+    description: 'Latest commit of the workflow run'
+    required: true
 
 runs:
   using: 'composite'
@@ -34,7 +46,6 @@ runs:
         
         echo "Received job status: ${{ inputs.job-status }}"
         
-        # Check if the status is PASS
         if [[ "${{ inputs.job-status }}" == "PASS" ]]; then
           echo "Job status is PASS"
           status="PASS ✅"
@@ -42,7 +53,6 @@ runs:
           mentionedId="${{ inputs.success-mention-id }}"
           mentionedName="${{ inputs.success-mention-name }}"
         else
-          # If not PASS, consider it as FAIL
           echo "Job status is FAIL"
           status="FAIL ❌"
           color="attention"
@@ -76,6 +86,26 @@ runs:
                   {
                     "type": "TextBlock",
                     "text": "**Status:** '"$status"'",
+                    "color": "'"$color"'"
+                  },
+                  {
+                    "type": "TextBlock",
+                    "text": "**Repository URL:** ${{ inputs.repository-url }}",
+                    "color": "'"$color"'"
+                  },
+                  {
+                    "type": "TextBlock",
+                    "text": "**Build Number:** ${{ inputs.build-number }}",
+                    "color": "'"$color"'"
+                  },
+                  {
+                    "type": "TextBlock",
+                    "text": "**Branch Name:** ${{ inputs.branch-name }}",
+                    "color": "'"$color"'"
+                  },
+                  {
+                    "type": "TextBlock",
+                    "text": "**Latest Commit:** ${{ inputs.latest-commit }}",
                     "color": "'"$color"'"
                   }
                 ],
