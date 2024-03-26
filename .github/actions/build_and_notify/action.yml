@@ -48,6 +48,7 @@ runs:
       run: echo "All steps passed"
 
     - name: Send notification to Microsoft Teams
+      shell: bash
       run: |
         JOB_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
         
