@@ -13,10 +13,6 @@ jobs:
         shell: bash
         run: echo "Building"
 
-      # - name: Error
-      #   shell: bash
-      #   run: exit 1
-
       - name: Checkout repository
         if: always()
         uses: actions/checkout@v2
@@ -26,7 +22,6 @@ jobs:
         if: always()
         run: |
           echo "Job status: ${{ job.status }}"
-          echo "Job outcome: ${{ job.outcome }}"
           if [ ${{ job.status }} == 'completed' ]; then
             if [ ${{ job.outcome }} == 'success' ]; then
               echo "Job outcome: Success"
@@ -40,6 +35,10 @@ jobs:
             echo "::set-output name=status::IN_PROGRESS"
           fi
       
+      - name: Debug Job Status
+        run: |
+          echo "Job status passed to action: ${{ steps.check_status.outputs.status }}"
+
       - name: Notify Build Status
         if: always()
         uses: ./.github/actions/build_and_notify
@@ -49,4 +48,4 @@ jobs:
           error-mention-name: ${{ secrets.ERROR_MENTION_NAME }}
           success-mention-id: ${{ secrets.SUCCESS_MENTION_ID }}
           success-mention-name: ${{ secrets.SUCCESS_MENTION_NAME }}
-          job-status: ${{ steps.check_status.outputs.status }}  # Pass dynamically fetched status
+          job-status: ${{ steps.check_status.outputs.status }}
