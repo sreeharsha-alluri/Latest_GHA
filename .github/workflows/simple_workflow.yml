@@ -1,0 +1,36 @@
+name: Simple Workflow
+ 
+on:
+  push:
+    branches:
+      - main
+ 
+jobs:
+  build-test-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build
+        shell: bash
+        run: echo "Building"
+
+      - name: Test
+        shell: bash
+        run: echo "Testing"
+
+      #- name: Error
+      #  shell: bash
+      #  run: exit 1
+
+      - name: Checkout repository
+        if: always()
+        uses: actions/checkout@v2
+
+      - name: Notify Build Status
+        if: always()
+        uses: ./.github/actions/build_and_notify
+        with:
+          webhook-url: ${{ secrets.WEBHOOK_URL }}
+          error-mention-id: ${{ secrets.ERROR_MENTION_ID }}
+          error-mention-name: ${{ secrets.ERROR_MENTION_NAME }}
+          success-mention-id: ${{ secrets.SUCCESS_MENTION_ID }}
+          success-mention-name: ${{ secrets.SUCCESS_MENTION_NAME }}
