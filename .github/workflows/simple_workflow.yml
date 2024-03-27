@@ -1,14 +1,20 @@
 name: Simple Workflow
-  
+
 on:
   push:
     branches:
       - main
- 
+
 jobs:
   build-test-deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: Check User Info
+        shell: bash
+        run: |
+          echo "$USER"
+          whoami
+
       - name: Build
         shell: bash
         run: echo "Building"
@@ -17,9 +23,9 @@ jobs:
         shell: bash
         run: echo "Testing"
 
-      - name: Error
-        shell: bash
-        run: exit 1
+      # - name: Error
+      #   shell: bash
+      #   run: exit 1
 
       - name: Checkout repository
         if: always()
