@@ -25,6 +25,7 @@ runs:
       uses: actions/checkout@v2
 
     - name: Get User Info
+      shell: bash
       run: |
          echo $USER
          whoami
