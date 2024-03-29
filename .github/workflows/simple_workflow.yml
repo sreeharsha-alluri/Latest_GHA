@@ -23,9 +23,9 @@ jobs:
         shell: bash
         run: echo "Testing"
 
-      # - name: Error
-      #   shell: bash
-      #   run: exit 1
+      - name: Error
+        shell: bash
+        run: exit 1
 
       - name: Checkout repository
         if: always()
