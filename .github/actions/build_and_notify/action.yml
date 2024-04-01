@@ -83,7 +83,7 @@ runs:
                   },
                   {
                     "type": "TextBlock",
-                    "text": "**Job Name:** '"${{ inputs.workflow-name }}"'",
+                    "text": "**Job Name:** '"${{ inputs.action-name }}"'",
                     "color": "'"$color"'"
                   },
                   {
