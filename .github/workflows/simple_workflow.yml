@@ -9,16 +9,9 @@ jobs:
   build-and-notify:
     runs-on: ubuntu-latest
 
-    env:
-      ERROR_MENTION_ID: ${{ secrets.ERROR_MENTION_ID }}
-      ERROR_MENTION_NAME: ${{ secrets.ERROR_MENTION_NAME }}
-      SUCCESS_MENTION_ID: ${{ secrets.SUCCESS_MENTION_ID }}
-      SUCCESS_MENTION_NAME: ${{ secrets.SUCCESS_MENTION_NAME }}
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
 
       - name: Build and Notify
         uses: ./.github/actions/build_and_notify
