@@ -1,20 +1,14 @@
-name: Simple Workflow  
-
+name: Simple Workflow
+ 
 on:
   push:
     branches:
       - main
-
+ 
 jobs:
   build-test-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Check User Info
-        shell: bash
-        run: |
-          echo "$USER"
-          whoami
-
       - name: Build
         shell: bash
         run: echo "Building"
@@ -23,9 +17,9 @@ jobs:
         shell: bash
         run: echo "Testing"
 
-      - name: Error
-        shell: bash
-        run: exit 1
+      # - name: Error
+      #   shell: bash
+      #   run: exit 1
 
       - name: Checkout repository
         if: always()
@@ -34,8 +28,8 @@ jobs:
       - name: Notify Build Status
         if: always()
         uses: ./.github/actions/build_and_notify
-        env:
-          ERROR_MENTION_ID: ${{ secrets.ERROR_MENTION_ID }}
-          ERROR_MENTION_NAME: ${{ secrets.ERROR_MENTION_NAME }}
-          SUCCESS_MENTION_ID: ${{ secrets.SUCCESS_MENTION_ID }}
-          SUCCESS_MENTION_NAME: ${{ secrets.SUCCESS_MENTION_NAME }}
+        with:
+          error-mention-id: ${{ secrets.ERROR_MENTION_ID }}
+          error-mention-name: ${{ secrets.ERROR_MENTION_NAME }}
+          success-mention-id: ${{ secrets.SUCCESS_MENTION_ID }}
+          success-mention-name: ${{ secrets.SUCCESS_MENTION_NAME }}
