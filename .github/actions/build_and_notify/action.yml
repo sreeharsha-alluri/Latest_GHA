@@ -20,9 +20,8 @@ runs:
   steps:
     - name: Checkout code
       uses: actions/checkout@v2
-
+      
     - name: Get commit information
-      shell: bash
       id: commit_info
       run: |
         COMMIT_HASH=$(git rev-parse HEAD)
@@ -31,17 +30,15 @@ runs:
         echo "::set-output name=branch_name::$BRANCH_NAME"
 
     - name: Determine job status
-      shell: bash
       id: job_status
       run: |
-        if [ -z "$COMMIT_HASH" ]; then
+        if [ failure ]; then
           echo "::set-output name=status::FAIL"
         else
           echo "::set-output name=status::PASS"
         fi
 
     - name: Send notification to Microsoft Teams
-      shell: bash
       if: always()
       run: |
         # Get the GitHub workflow run URL
