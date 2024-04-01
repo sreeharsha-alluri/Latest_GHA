@@ -9,10 +9,10 @@ jobs:
   build-test-deploy:
     runs-on: ubuntu-latest
     env:
-      ERROR_MENTION_ID: ${{ secrets.GHA_Environment_Variables.ERROR_MENTION_ID }}
-      ERROR_MENTION_NAME: ${{ secrets.GHA_Environment_Variables.ERROR_MENTION_NAME }}
-      SUCCESS_MENTION_ID: ${{ secrets.GHA_Environment_Variables.SUCCESS_MENTION_ID }}
-      SUCCESS_MENTION_NAME: ${{ secrets.GHA_Environment_Variables.SUCCESS_MENTION_NAME }}
+      error-mention-id: ${{ secrets.ERROR_MENTION_ID }}
+      error-mention-name: ${{ secrets.ERROR_MENTION_NAME }}
+      success-mention-id: ${{ secrets.SUCCESS_MENTION_ID }}
+      success-mention-name: ${{ secrets.SUCCESS_MENTION_NAME }}
     steps:
       - name: Check User Info
         shell: bash
