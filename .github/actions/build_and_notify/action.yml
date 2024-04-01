@@ -18,36 +18,29 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Print all environment variables
-      run: |
-        printenv
-      shell: bash
-
     - name: Checkout code
       uses: actions/checkout@v2
-
-    - name: Print environment variables
+	  
+	- name: Print environment variables
       shell: bash
       run: |
         echo "ERROR_MENTION_ID: ${{ env.ERROR_MENTION_ID }}"
         echo "ERROR_MENTION_NAME: ${{ env.ERROR_MENTION_NAME }}"
         echo "SUCCESS_MENTION_ID: ${{ env.SUCCESS_MENTION_ID }}"
         echo "SUCCESS_MENTION_NAME: ${{ env.SUCCESS_MENTION_NAME }}"
-
-    - name: Debug Environment Variables
+     
+    - name: Get User Info
       shell: bash
       run: |
-        echo "ERROR_MENTION_ID: $ERROR_MENTION_ID"
-        echo "ERROR_MENTION_NAME: $ERROR_MENTION_NAME"
-        echo "SUCCESS_MENTION_ID: $SUCCESS_MENTION_ID"
-        echo "SUCCESS_MENTION_NAME: $SUCCESS_MENTION_NAME"
-        
+         echo $USER
+         whoami
+
     - name: Get commit information
       id: commit_info
       shell: bash
       run: |
         COMMIT_HASH=$(git rev-parse HEAD)
-        BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
+        BRANCH_NAME=$(git ls-remote --heads $REPO_URL | grep '/dev$' | awk '{print $2}' | sed 's#refs/heads/##')
         echo "::set-output name=commit_hash::$COMMIT_HASH"
         echo "::set-output name=branch_name::$BRANCH_NAME"
 
@@ -55,7 +48,7 @@ runs:
       shell: bash
       id: job_status
       run: |
-        if [ "$GITHUB_JOB" == "failure" ]; then
+        if [ ${{ job.status }} == "failure" ]; then
           echo "::set-output name=status::FAIL"
         else
           echo "::set-output name=status::PASS"
@@ -66,17 +59,17 @@ runs:
       if: always()
       run: |
         # Get the GitHub workflow run URL
-        JOB_URL="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+        JOB_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
         
         # Get the commit information from previous step
         COMMIT_HASH=${{ steps.commit_info.outputs.commit_hash }}
         BRANCH_NAME=${{ steps.commit_info.outputs.branch_name }}
         
         # Get the repository URL
-        REPO_URL="[${GITHUB_REPOSITORY}](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY})"
+        REPO_URL="[${{ github.repository }}](${{ github.event.repository.html_url }})"
         
         # Get the build number
-        BUILD_NUMBER="${GITHUB_RUN_NUMBER}"
+        BUILD_NUMBER="${{ github.run_number }}"
         
         # Determine the job status from previous step
         STATUS=${{ steps.job_status.outputs.status }}
