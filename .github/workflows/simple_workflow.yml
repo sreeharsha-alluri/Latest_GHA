@@ -22,15 +22,12 @@ jobs:
         shell: bash
         run: echo "Testing"
 
-      # - name: Error
-      #   shell: bash
-      #   run: exit 1
-
       - name: Build and Notify
         if: always()
         uses: ./.github/actions/build_and_notify
         with:
-          workflow-name: ${{ inputs.action-name }}
+          action-name: ${{ github.workflow }}
+          workflow-name: ${{ github.workflow }}
           error-mention-id: ${{ vars.ERROR_MENTION_ID }}
           error-mention-name: ${{ vars.ERROR_MENTION_NAME }}
           success-mention-id: ${{ vars.SUCCESS_MENTION_ID }}
