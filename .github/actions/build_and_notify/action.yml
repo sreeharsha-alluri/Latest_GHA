@@ -34,12 +34,11 @@ runs:
       shell: bash
       id: job_status
       run: |
-        if [ failure ]; then
+        if [ ${{ job.status }} == "failure" ]; then
           echo "::set-output name=status::FAIL"
         else
           echo "::set-output name=status::PASS"
         fi
-
     - name: Send notification to Microsoft Teams
       shell: bash
       if: always()
