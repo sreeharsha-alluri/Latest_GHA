@@ -2,18 +2,10 @@ name: ${{ inputs.action-name }}
 description: 'Composite action for building and notifying'
 
 inputs:
-  error-mention-id:
-    description: 'ID for mentioning in case of error'
+  action-name:
+    description: 'Name for the action'
     required: true
-  error-mention-name:
-    description: 'Name for mentioning in case of error'
-    required: true
-  success-mention-id:
-    description: 'ID for mentioning in case of success'
-    required: true
-  success-mention-name:
-    description: 'Name for mentioning in case of success'
-    required: true
+    default: 'Composite Action' # Provide a default value if needed
 
 runs:
   using: 'composite'
@@ -39,6 +31,7 @@ runs:
         else
           echo "::set-output name=status::PASS"
         fi
+
     - name: Send notification to Microsoft Teams
       shell: bash
       if: always()
