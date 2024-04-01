@@ -8,6 +8,7 @@ on:
 jobs:
   build-and-notify:
     runs-on: ubuntu-latest
+    environment: GHA_Environment_Variables
 
     steps:
       - name: Checkout code
