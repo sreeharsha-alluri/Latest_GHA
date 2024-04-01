@@ -17,6 +17,11 @@ inputs:
 
 runs:
   using: 'composite'
+  env:
+    ERROR_MENTION_ID: ${{ inputs.error-mention-id }}
+    ERROR_MENTION_NAME: ${{ inputs.error-mention-name }}
+    SUCCESS_MENTION_ID: ${{ inputs.success-mention-id }}
+    SUCCESS_MENTION_NAME: ${{ inputs.success-mention-name }}
   steps:
     - name: Checkout code
       uses: actions/checkout@v2
@@ -70,13 +75,13 @@ runs:
         if [ "$STATUS" == "FAIL" ]; then
           status="FAIL ❌"
           color="attention"
-          mentionedId="${{ inputs.error-mention-id }}"
-          mentionedName="${{ inputs.error-mention-name }}"
+          mentionedId="${{ env.ERROR_MENTION_ID }}"
+          mentionedName="${{ env.ERROR_MENTION_NAME }}"
         else
           status="PASS ✅"
           color="good"
-          mentionedId="${{ inputs.success-mention-id }}"
-          mentionedName="${{ inputs.success-mention-name }}"
+          mentionedId="${{ env.SUCCESS_MENTION_ID }}"
+          mentionedName="${{ env.SUCCESS_MENTION_NAME }}"
         fi
         
         # Generate the payload for the notification
