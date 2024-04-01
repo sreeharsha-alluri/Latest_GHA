@@ -31,7 +31,6 @@ runs:
         echo "::set-output name=branch_name::$BRANCH_NAME"
 
     - name: Determine job status
-      shell: bash
       id: job_status
       run: |
         if [ "${{ job.status }}" == "failure" ]; then
@@ -41,7 +40,6 @@ runs:
         fi
 
     - name: Send notification to Microsoft Teams
-      shell: bash
       if: always()
       run: |
         # Get the GitHub workflow run URL
