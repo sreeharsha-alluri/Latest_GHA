@@ -22,7 +22,7 @@ runs:
     ERROR_MENTION_NAME: ${{ inputs.error-mention-name }}
     SUCCESS_MENTION_ID: ${{ inputs.success-mention-id }}
     SUCCESS_MENTION_NAME: ${{ inputs.success-mention-name }}
-
+    
     - name: Checkout code
       uses: actions/checkout@v2
 
