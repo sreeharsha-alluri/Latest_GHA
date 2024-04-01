@@ -1,4 +1,4 @@
-name: Updated Sample Workflow
+name: New Sample Workflow
 
 on:
   push:
