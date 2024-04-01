@@ -80,7 +80,7 @@ runs:
                   },
                   {
                     "type": "TextBlock",
-                    "text": "**Job Name:** Build and Notify",
+                    "text": "**Job Name:**,
                     "color": "'"$color"'"
                   },
                   {
