@@ -18,6 +18,11 @@ inputs:
 runs:
   using: 'composite'
   steps:
+    - name: Print all environment variables
+      run: |
+        printenv
+      shell: bash
+
     - name: Checkout code
       uses: actions/checkout@v2
 
