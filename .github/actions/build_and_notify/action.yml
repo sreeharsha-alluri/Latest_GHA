@@ -1,4 +1,3 @@
-name: ${{ inputs.action-name }}
 description: 'Composite action for building and notifying'
 
 inputs:
