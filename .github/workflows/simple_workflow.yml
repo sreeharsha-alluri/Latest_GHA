@@ -30,7 +30,7 @@ jobs:
         if: always()
         uses: ./.github/actions/build_and_notify
         with:
-          workflow-name: ${{ github.workflow }}
+          workflow-name: ${{ inputs.action-name }}
           error-mention-id: ${{ vars.ERROR_MENTION_ID }}
           error-mention-name: ${{ vars.ERROR_MENTION_NAME }}
           success-mention-id: ${{ vars.SUCCESS_MENTION_ID }}
