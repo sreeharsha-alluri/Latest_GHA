@@ -29,11 +29,11 @@ runs:
     - name: Print environment variables
       shell: bash
       run: |
-        echo "ERROR_MENTION_ID: ${{ inputs.error-mention-id }}"
-        echo "ERROR_MENTION_NAME: ${{ inputs.error-mention-name }}"
-        echo "SUCCESS_MENTION_ID: ${{ inputs.success-mention-id }}"
-        echo "SUCCESS_MENTION_NAME: ${{ inputs.success-mention-name }}"
-
+        echo "ERROR_MENTION_ID: ${{ env.ERROR_MENTION_ID }}"
+        echo "ERROR_MENTION_NAME: ${{ env.ERROR_MENTION_NAME }}"
+        echo "SUCCESS_MENTION_ID: ${{ env.SUCCESS_MENTION_ID }}"
+        echo "SUCCESS_MENTION_NAME: ${{ env.SUCCESS_MENTION_NAME }}"
+        
     - name: Get commit information
       id: commit_info
       shell: bash
