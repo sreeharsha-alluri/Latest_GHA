@@ -34,8 +34,8 @@ jobs:
       - name: Notify Build Status
         if: always()
         uses: ./.github/actions/build_and_notify
-        with:
-          error-mention-id: ${{ secrets.ERROR_MENTION_ID }}
-          error-mention-name: ${{ secrets.ERROR_MENTION_NAME }}
-          success-mention-id: ${{ secrets.SUCCESS_MENTION_ID }}
-          success-mention-name: ${{ secrets.SUCCESS_MENTION_NAME }}
+        env:
+          ERROR_MENTION_ID: ${{ secrets.ERROR_MENTION_ID }}
+          ERROR_MENTION_NAME: ${{ secrets.ERROR_MENTION_NAME }}
+          SUCCESS_MENTION_ID: ${{ secrets.SUCCESS_MENTION_ID }}
+          SUCCESS_MENTION_NAME: ${{ secrets.SUCCESS_MENTION_NAME }}
