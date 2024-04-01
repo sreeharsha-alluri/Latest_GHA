@@ -1,14 +1,25 @@
 name: 'Build and Notify'
 description: 'Composite action for building and notifying'
 
+inputs:
+  webhook-url:
+    description: 'URL for Microsoft Teams webhook'
+    required: true
+  error-mention-id:
+    description: 'ID for mentioning in case of error'
+    required: true
+  error-mention-name:
+    description: 'Name for mentioning in case of error'
+    required: true
+  success-mention-id:
+    description: 'ID for mentioning in case of success'
+    required: true
+  success-mention-name:
+    description: 'Name for mentioning in case of success'
+    required: true
+
 runs:
   using: 'composite'
-  env:
-    WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
-    ERROR_MENTION_ID: ${{ secrets.ERROR_MENTION_ID }}
-    ERROR_MENTION_NAME: ${{ secrets.ERROR_MENTION_NAME }}
-    SUCCESS_MENTION_ID: ${{ secrets.SUCCESS_MENTION_ID }}
-    SUCCESS_MENTION_NAME: ${{ secrets.SUCCESS_MENTION_NAME }}
   steps:
     - name: Checkout code
       uses: actions/checkout@v2
@@ -62,13 +73,13 @@ runs:
         if [ "$STATUS" == "FAIL" ]; then
           status="FAIL ❌"
           color="attention"
-          mentionedId="${ERROR_MENTION_ID}"
-          mentionedName="${ERROR_MENTION_NAME}"
+          mentionedId="${{ inputs.error-mention-id }}"
+          mentionedName="${{ inputs.error-mention-name }}"
         else
           status="PASS ✅"
           color="good"
-          mentionedId="${SUCCESS_MENTION_ID}"
-          mentionedName="${SUCCESS_MENTION_NAME}"
+          mentionedId="${{ inputs.success-mention-id }}"
+          mentionedName="${{ inputs.success-mention-name }}"
         fi
         
         # Generate the payload for the notification
@@ -139,4 +150,4 @@ runs:
         }'
                 
         # Send the payload to Microsoft Teams
-        echo "$payload" | curl -X POST -H 'Content-Type: application/json' -d @- "$WEBHOOK_URL"
+        echo "$payload" | curl -X POST -H 'Content-Type: application/json' -d @- "${{ inputs.webhook-url }}"
