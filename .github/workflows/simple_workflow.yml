@@ -1,4 +1,4 @@
-name: Build and Notify
+name: Sample Workflow
 
 on:
   push:
