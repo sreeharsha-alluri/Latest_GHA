@@ -80,7 +80,7 @@ runs:
                   },
                   {
                     "type": "TextBlock",
-                    "text": "**Job Name:**,
+                    "text": "**Job Name:** '${{ github.workflow }}'",
                     "color": "'"$color"'"
                   },
                   {
