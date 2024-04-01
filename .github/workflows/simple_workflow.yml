@@ -1,4 +1,5 @@
-name: Simple Workflow   
+name: 'Build and Notify'
+description: 'Composite action for building and notifying'
 
 on:
   push:
@@ -8,38 +9,15 @@ on:
 jobs:
   build-test-deploy:
     runs-on: ubuntu-latest
-    env:
-      error-mention-id: ${{ secrets.ERROR_MENTION_ID }}
-      error-mention-name: ${{ secrets.ERROR_MENTION_NAME }}
-      success-mention-id: ${{ secrets.SUCCESS_MENTION_ID }}
-      success-mention-name: ${{ secrets.SUCCESS_MENTION_NAME }}
+
     steps:
-      - name: Check User Info
-        shell: bash
-        run: |
-          echo "$USER"
-          whoami
-      - name: Build
-        shell: bash
-        run: echo "Building"
-
-      - name: Test
-        shell: bash
-        run: echo "Testing"
-
-      # - name: Error
-      #   shell: bash
-      #   run: exit 1
-
-      - name: Checkout repository
-        if: always()
+      - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Notify Build Status
-        if: always()
+      - name: Build and Notify
         uses: ./.github/actions/build_and_notify
         with:
-          error-mention-id: ${{ env.ERROR_MENTION_ID }}
-          error-mention-name: ${{ env.ERROR_MENTION_NAME }}
-          success-mention-id: ${{ env.SUCCESS_MENTION_ID }}
-          success-mention-name: ${{ env.SUCCESS_MENTION_NAME }}
+          error-mention-id: ${{ secrets.ERROR_MENTION_ID }}
+          error-mention-name: ${{ secrets.ERROR_MENTION_NAME }}
+          success-mention-id: ${{ secrets.SUCCESS_MENTION_ID }}
+          success-mention-name: ${{ secrets.SUCCESS_MENTION_NAME }}
