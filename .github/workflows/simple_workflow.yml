@@ -22,9 +22,9 @@ jobs:
         shell: bash
         run: echo "Testing"
 
-      # - name: Error
-      #   shell: bash
-      #   run: exit 1
+      - name: Error
+        shell: bash
+        run: exit 1
 
       - name: Build and Notify
         uses: ./.github/actions/build_and_notify
