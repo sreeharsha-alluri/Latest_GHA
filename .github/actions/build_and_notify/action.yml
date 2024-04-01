@@ -21,41 +21,24 @@ runs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Print environment variables
-      shell: bash
-      run: |
-        echo "ERROR_MENTION_ID: ${{ env.ERROR_MENTION_ID }}"
-        echo "ERROR_MENTION_NAME: ${{ env.ERROR_MENTION_NAME }}"
-        echo "SUCCESS_MENTION_ID: ${{ env.SUCCESS_MENTION_ID }}"
-        echo "SUCCESS_MENTION_NAME: ${{ env.SUCCESS_MENTION_NAME }}"
-
-    - name: Get User Info
-      shell: bash
-      run: |
-         echo $USER
-         whoami
-
     - name: Get commit information
       id: commit_info
-      shell: bash
       run: |
         COMMIT_HASH=$(git rev-parse HEAD)
-        BRANCH_NAME=$(git ls-remote --heads $REPO_URL | grep '/dev$' | awk '{print $2}' | sed 's#refs/heads/##')
+        BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
         echo "::set-output name=commit_hash::$COMMIT_HASH"
         echo "::set-output name=branch_name::$BRANCH_NAME"
 
     - name: Determine job status
-      shell: bash
       id: job_status
       run: |
-        if [ ${{ job.status }} == "failure" ]; then
+        if [ -z "$COMMIT_HASH" ]; then
           echo "::set-output name=status::FAIL"
         else
           echo "::set-output name=status::PASS"
         fi
 
     - name: Send notification to Microsoft Teams
-      shell: bash
       if: always()
       run: |
         # Get the GitHub workflow run URL
