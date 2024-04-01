@@ -27,6 +27,7 @@ jobs:
         run: exit 1
 
       - name: Build and Notify
+        if: always()
         uses: ./.github/actions/build_and_notify
         with:
           error-mention-id: ${{ vars.ERROR_MENTION_ID }}
