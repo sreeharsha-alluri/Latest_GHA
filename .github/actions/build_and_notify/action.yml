@@ -5,6 +5,9 @@ inputs:
     description: 'Name for the action'
     required: true
     default: 'Composite Action' # Provide a default value if needed
+  workflow-name:
+    description: 'Name of the workflow'
+    required: true
 
 runs:
   using: 'composite'
@@ -80,7 +83,7 @@ runs:
                   },
                   {
                     "type": "TextBlock",
-                    "text": "**Job Name:** '${{ inputs.action-name }}'",
+                    "text": "**Job Name:** '"${{ inputs.workflow-name }}"'",
                     "color": "'"$color"'"
                   },
                   {
