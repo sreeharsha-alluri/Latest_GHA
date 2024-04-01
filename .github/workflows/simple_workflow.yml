@@ -1,4 +1,4 @@
-name: 'Build and Notify'
+name: Build and Notify
 
 on:
   push:
@@ -6,8 +6,14 @@ on:
       - main
 
 jobs:
-  build-test-deploy:
+  build-and-notify:
     runs-on: ubuntu-latest
+
+    env:
+      ERROR_MENTION_ID: ${{ secrets.ERROR_MENTION_ID }}
+      ERROR_MENTION_NAME: ${{ secrets.ERROR_MENTION_NAME }}
+      SUCCESS_MENTION_ID: ${{ secrets.SUCCESS_MENTION_ID }}
+      SUCCESS_MENTION_NAME: ${{ secrets.SUCCESS_MENTION_NAME }}
 
     steps:
       - name: Checkout code
@@ -16,7 +22,7 @@ jobs:
       - name: Build and Notify
         uses: ./.github/actions/build_and_notify
         with:
-          error-mention-id: ${{ secrets.ERROR_MENTION_ID }}
-          error-mention-name: ${{ secrets.ERROR_MENTION_NAME }}
-          success-mention-id: ${{ secrets.SUCCESS_MENTION_ID }}
-          success-mention-name: ${{ secrets.SUCCESS_MENTION_NAME }}
+          error-mention-id: ${{ env.ERROR_MENTION_ID }}
+          error-mention-name: ${{ env.ERROR_MENTION_NAME }}
+          success-mention-id: ${{ env.SUCCESS_MENTION_ID }}
+          success-mention-name: ${{ env.SUCCESS_MENTION_NAME }}
