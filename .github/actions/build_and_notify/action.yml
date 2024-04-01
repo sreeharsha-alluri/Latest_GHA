@@ -1,15 +1,14 @@
 name: 'Build and Notify'
 description: 'Composite action for building and notifying'
 
-env:
-  WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
-  ERROR_MENTION_ID: ${{ secrets.ERROR_MENTION_ID }}
-  ERROR_MENTION_NAME: ${{ secrets.ERROR_MENTION_NAME }}
-  SUCCESS_MENTION_ID: ${{ secrets.SUCCESS_MENTION_ID }}
-  SUCCESS_MENTION_NAME: ${{ secrets.SUCCESS_MENTION_NAME }}
-
 runs:
   using: 'composite'
+  env:
+    WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+    ERROR_MENTION_ID: ${{ secrets.ERROR_MENTION_ID }}
+    ERROR_MENTION_NAME: ${{ secrets.ERROR_MENTION_NAME }}
+    SUCCESS_MENTION_ID: ${{ secrets.SUCCESS_MENTION_ID }}
+    SUCCESS_MENTION_NAME: ${{ secrets.SUCCESS_MENTION_NAME }}
   steps:
     - name: Checkout code
       uses: actions/checkout@v2
