@@ -24,10 +24,10 @@ runs:
     - name: Print environment variables
       shell: bash
       run: |
-        echo "ERROR_MENTION_ID: ${{ env.ERROR_MENTION_ID }}"
-        echo "ERROR_MENTION_NAME: ${{ env.ERROR_MENTION_NAME }}"
-        echo "SUCCESS_MENTION_ID: ${{ env.SUCCESS_MENTION_ID }}"
-        echo "SUCCESS_MENTION_NAME: ${{ env.SUCCESS_MENTION_NAME }}"
+        echo "ERROR_MENTION_ID: ${{ env.GHA_Environment_Variables_ERROR_MENTION_ID }}"
+        echo "ERROR_MENTION_NAME: ${{ env.GHA_Environment_Variables_ERROR_MENTION_NAME }}"
+        echo "SUCCESS_MENTION_ID: ${{ env.GHA_Environment_Variables_SUCCESS_MENTION_ID }}"
+        echo "SUCCESS_MENTION_NAME: ${{ env.GHA_Environment_Variables_SUCCESS_MENTION_NAME }}"
 
     - name: Get commit information
       id: commit_info
