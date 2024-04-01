@@ -1,22 +1,12 @@
 name: 'Build and Notify'
 description: 'Composite action for building and notifying'
 
-inputs:
-  webhook-url:
-    description: 'URL for Microsoft Teams webhook'
-    required: true
-  error-mention-id:
-    description: 'ID for mentioning in case of error'
-    required: true
-  error-mention-name:
-    description: 'Name for mentioning in case of error'
-    required: true
-  success-mention-id:
-    description: 'ID for mentioning in case of success'
-    required: true
-  success-mention-name:
-    description: 'Name for mentioning in case of success'
-    required: true
+env:
+  WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+  ERROR_MENTION_ID: ${{ secrets.ERROR_MENTION_ID }}
+  ERROR_MENTION_NAME: ${{ secrets.ERROR_MENTION_NAME }}
+  SUCCESS_MENTION_ID: ${{ secrets.SUCCESS_MENTION_ID }}
+  SUCCESS_MENTION_NAME: ${{ secrets.SUCCESS_MENTION_NAME }}
 
 runs:
   using: 'composite'
@@ -73,13 +63,13 @@ runs:
         if [ "$STATUS" == "FAIL" ]; then
           status="FAIL ❌"
           color="attention"
-          mentionedId="${{ inputs.error-mention-id }}"
-          mentionedName="${{ inputs.error-mention-name }}"
+          mentionedId="${ERROR_MENTION_ID}"
+          mentionedName="${ERROR_MENTION_NAME}"
         else
           status="PASS ✅"
           color="good"
-          mentionedId="${{ inputs.success-mention-id }}"
-          mentionedName="${{ inputs.success-mention-name }}"
+          mentionedId="${SUCCESS_MENTION_ID}"
+          mentionedName="${SUCCESS_MENTION_NAME}"
         fi
         
         # Generate the payload for the notification
@@ -150,4 +140,4 @@ runs:
         }'
                 
         # Send the payload to Microsoft Teams
-        echo "$payload" | curl -X POST -H 'Content-Type: application/json' -d @- 'https://amdcloud.webhook.office.com/webhookb2/133d4f16-689b-4281-a94b-44725b948c77@3dd8961f-e488-4e60-8e11-a82d994e183d/IncomingWebhook/20c43fc799fd49e9813582813c638323/f9e22351-f1c9-494f-88c5-8e04accf2ffe'
+        echo "$payload" | curl -X POST -H 'Content-Type: application/json' -d @- "$WEBHOOK_URL"
