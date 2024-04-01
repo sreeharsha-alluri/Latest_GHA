@@ -35,7 +35,6 @@ jobs:
         if: always()
         uses: ./.github/actions/build_and_notify
         with:
-          webhook-url: ${{ secrets.WEBHOOK_URL }}
           error-mention-id: ${{ secrets.ERROR_MENTION_ID }}
           error-mention-name: ${{ secrets.ERROR_MENTION_NAME }}
           success-mention-id: ${{ secrets.SUCCESS_MENTION_ID }}
