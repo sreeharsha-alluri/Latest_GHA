@@ -14,10 +14,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Build
+        shell: bash
+        run: echo "Building"
+
+      - name: Test
+        shell: bash
+        run: echo "Testing"
+
+      # - name: Error
+      #   shell: bash
+      #   run: exit 1
+
       - name: Build and Notify
         uses: ./.github/actions/build_and_notify
         with:
-          error-mention-id: ${{ vars.ERROR_MENTION_ID }}
-          error-mention-name: ${{ vars.ERROR_MENTION_NAME }}
-          success-mention-id: ${{ vars.SUCCESS_MENTION_ID }}
-          success-mention-name: ${{ vars.SUCCESS_MENTION_NAME }}
+          error-mention-id: ${{ env.ERROR_MENTION_ID }}
+          error-mention-name: ${{ env.ERROR_MENTION_NAME }}
+          success-mention-id: ${{ env.SUCCESS_MENTION_ID }}
+          success-mention-name: ${{ env.SUCCESS_MENTION_NAME }}
