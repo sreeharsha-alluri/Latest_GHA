@@ -20,15 +20,15 @@ runs:
   steps:
     - name: Checkout code
       uses: actions/checkout@v2
-	  
-	- name: Print environment variables
+
+    - name: Print environment variables
       shell: bash
       run: |
         echo "ERROR_MENTION_ID: ${{ env.ERROR_MENTION_ID }}"
         echo "ERROR_MENTION_NAME: ${{ env.ERROR_MENTION_NAME }}"
         echo "SUCCESS_MENTION_ID: ${{ env.SUCCESS_MENTION_ID }}"
         echo "SUCCESS_MENTION_NAME: ${{ env.SUCCESS_MENTION_NAME }}"
-     
+
     - name: Get User Info
       shell: bash
       run: |
