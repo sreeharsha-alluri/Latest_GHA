@@ -19,43 +19,25 @@ inputs:
   success-mention-name:
     description: 'Name for mentioning in case of success'
     required: true
-  commit-hash:
-    description: 'Commit hash of the latest commit'
-    required: true
-  branch-name:
-    description: 'Name of the branch where the workflow is triggered'
-    required: true
-  status:
-    description: 'Status of the workflow (e.g., PASS or FAIL)'
-    required: true
 
 runs:
   using: 'composite'
   steps:
+    - name: Parse environment variables
+      id: parse_env
+      run: |
+        ERROR_MENTION_ID=$(grep -Po '"ERROR_MENTION_ID": *\K"[^"]*"' env.json | tr -d '"')
+        ERROR_MENTION_NAME=$(grep -Po '"ERROR_MENTION_NAME": *\K"[^"]*"' env.json | tr -d '"')
+        SUCCESS_MENTION_ID=$(grep -Po '"SUCCESS_MENTION_ID": *\K"[^"]*"' env.json | tr -d '"')
+        SUCCESS_MENTION_NAME=$(grep -Po '"SUCCESS_MENTION_NAME": *\K"[^"]*"' env.json | tr -d '"')
+        echo "ERROR_MENTION_ID=${ERROR_MENTION_ID}" >> $GITHUB_ENV
+        echo "ERROR_MENTION_NAME=${ERROR_MENTION_NAME}" >> $GITHUB_ENV
+        echo "SUCCESS_MENTION_ID=${SUCCESS_MENTION_ID}" >> $GITHUB_ENV
+        echo "SUCCESS_MENTION_NAME=${SUCCESS_MENTION_NAME}" >> $GITHUB_ENV
+
     - name: Checkout code
       uses: actions/checkout@v2
-      with:
-        fetch-depth: 0  # Fetch all history for accurate commit information
 
-    - name: Get commit information
-      shell: bash
-      id: commit_info
-      run: |
-        COMMIT_HASH=$(git rev-parse HEAD)
-        BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
-        echo "COMMIT_HASH=${COMMIT_HASH}" >> $GITHUB_ENV
-        echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_ENV
-
-    - name: Determine job status
-      shell: bash
-      id: job_status
-      run: |
-        if [ ${{ job.status }} == "failure" ]; then
-          echo "STATUS=FAIL" >> $GITHUB_ENV
-        else
-          echo "STATUS=PASS" >> $GITHUB_ENV
-        fi
-        
     - name: Send notification to Microsoft Teams
       shell: bash
       if: always()
@@ -123,12 +105,12 @@ runs:
                   },
                   {
                     "type": "TextBlock",
-                    "text": "**Branch Name:** '"${{ env.BRANCH_NAME }}"'",
+                    "text": "**Branch Name:** '"${{ github.ref/heads/ }}"'",
                     "color": "'"$color"'"
                   },
                   {
                     "type": "TextBlock",
-                    "text": "**Latest Commit:** '"${{ env.COMMIT_HASH }}"'",
+                    "text": "**Latest Commit:** '"${{ github.sha }}"'",
                     "color": "'"$color"'"
                   }
                 ],
