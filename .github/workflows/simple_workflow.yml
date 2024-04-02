@@ -42,8 +42,7 @@ jobs:
           echo "ERROR_MENTION_ID: ${{ steps.load_env.outputs.env.ERROR_MENTION_ID }}"
           echo "ERROR_MENTION_NAME: ${{ steps.load_env.outputs.env.ERROR_MENTION_NAME }}"
           echo "SUCCESS_MENTION_ID: ${{ steps.load_env.outputs.env.SUCCESS_MENTION_ID }}"
-          echo "SUCCESS_MENTION_NAME: ${{ steps.load_env.outputs.env.SUCCESS_MENTION_NAME }}"
-          
+          echo "SUCCESS_MENTION_NAME: ${{ steps.load_env.outputs.env.SUCCESS_MENTION_NAME }}"          
       - name: Send notification to Microsoft Teams
         if: always()
         uses: ./.github/actions/build_and_notify
