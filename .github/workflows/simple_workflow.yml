@@ -13,16 +13,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Load environment variables from env.json
-        id: load_env
+      - name: Parse environment variables
         run: |
+          node -e "
           const fs = require('fs');
           const envFile = 'env.json';
           const data = fs.readFileSync(envFile, 'utf8');
           const env = JSON.parse(data);
-          console.log('Parsed environment variables:', env);
-          fs.writeFileSync('.env', `ERROR_MENTION_ID=${env.ERROR_MENTION_ID}\nERROR_MENTION_NAME=${env.ERROR_MENTION_NAME}\nSUCCESS_MENTION_ID=${env.SUCCESS_MENTION_ID}\nSUCCESS_MENTION_NAME=${env.SUCCESS_MENTION_NAME}`);
-        
+
+          const envString = `ERROR_MENTION_ID=${env.ERROR_MENTION_ID}\nERROR_MENTION_NAME=${env.ERROR_MENTION_NAME}\nSUCCESS_MENTION_ID=${env.SUCCESS_MENTION_ID}\nSUCCESS_MENTION_NAME=${env.SUCCESS_MENTION_NAME}`;
+
+          fs.writeFileSync('.env', envString);
+          "
+
       - name: Print environment variables
         run: |
           source .env
