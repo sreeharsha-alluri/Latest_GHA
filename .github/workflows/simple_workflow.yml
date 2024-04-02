@@ -15,19 +15,10 @@ jobs:
 
       - name: Parse environment variables
         run: |
-          node -e "
-          const fs = require('fs');
-          const envFile = 'env.json';
-          const data = fs.readFileSync(envFile, 'utf8');
-          const env = JSON.parse(data);
-          
-          const envString = 'ERROR_MENTION_ID=' + env.ERROR_MENTION_ID + '\n' +
-                             'ERROR_MENTION_NAME=' + env.ERROR_MENTION_NAME + '\n' +
-                             'SUCCESS_MENTION_ID=' + env.SUCCESS_MENTION_ID + '\n' +
-                             'SUCCESS_MENTION_NAME=' + env.SUCCESS_MENTION_NAME;
-          
-          fs.writeFileSync('.env', envString);
-          "
+          echo "ERROR_MENTION_ID='${{ fromJson(toString(file('./env.json')))['ERROR_MENTION_ID'] }}'" >> .env
+          echo "ERROR_MENTION_NAME='${{ fromJson(toString(file('./env.json')))['ERROR_MENTION_NAME'] }}'" >> .env
+          echo "SUCCESS_MENTION_ID='${{ fromJson(toString(file('./env.json')))['SUCCESS_MENTION_ID'] }}'" >> .env
+          echo "SUCCESS_MENTION_NAME='${{ fromJson(toString(file('./env.json')))['SUCCESS_MENTION_NAME'] }}'" >> .env
 
       - name: Print environment variables
         run: |
