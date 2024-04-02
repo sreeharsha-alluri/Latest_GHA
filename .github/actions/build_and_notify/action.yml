@@ -40,6 +40,7 @@ runs:
       uses: actions/checkout@v2
 
     - name: Get branch name
+      shell: bash
       id: branch_name
       run: echo "::set-env name=BRANCH_NAME::$(basename $GITHUB_REF)"
 
