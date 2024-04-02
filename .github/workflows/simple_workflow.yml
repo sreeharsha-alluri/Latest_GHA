@@ -35,7 +35,7 @@ jobs:
             const data = fs.readFileSync(envFile, 'utf8');
             const env = JSON.parse(data);
             console.log('Parsed environment variables:', env);
-            return env
+            return { env: env }
 
       - name: Echo environment variables
         run: |
