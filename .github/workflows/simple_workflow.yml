@@ -37,6 +37,10 @@ jobs:
             console.log('Parsed environment variables:', env);
             return { env: env }
 
+      - name: Output loaded environment variables
+        run: |
+         echo "Loaded environment variables: ${{ toJson(steps.load_env.outputs.env) }}"
+
       - name: Echo environment variables
         run: |
           echo "ERROR_MENTION_ID: ${{ steps.load_env.outputs.ERROR_MENTION_ID }}"
