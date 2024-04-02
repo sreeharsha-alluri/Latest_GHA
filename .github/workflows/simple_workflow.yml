@@ -42,7 +42,7 @@ jobs:
         uses: ./.github/actions/build_and_notify
         with:
           action-name: ${{ github.workflow }}
-          error-mention-id: ${{ fromJSON(steps.load_env.outputs.env).ERROR_MENTION_ID }}
-          error-mention-name: ${{ fromJSON(steps.load_env.outputs.env).ERROR_MENTION_NAME }}
-          success-mention-id: ${{ fromJSON(steps.load_env.outputs.env).SUCCESS_MENTION_ID }}
-          success-mention-name: ${{ fromJSON(steps.load_env.outputs.env).SUCCESS_MENTION_NAME }}
+          error-mention-id: ${{ steps.load_env.outputs.ERROR_MENTION_ID }}
+          error-mention-name: ${{ steps.load_env.outputs.ERROR_MENTION_NAME }}
+          success-mention-id: ${{ steps.load_env.outputs.SUCCESS_MENTION_ID }}
+          success-mention-name: ${{ steps.load_env.outputs.SUCCESS_MENTION_NAME }}
