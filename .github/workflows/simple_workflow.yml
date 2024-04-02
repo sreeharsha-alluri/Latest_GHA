@@ -9,12 +9,6 @@ jobs:
   build-and-notify:
     runs-on: ubuntu-latest
 
-    env:
-      ERROR_MENTION_ID: ${{ secrets.ERROR_MENTION_ID }}
-      ERROR_MENTION_NAME: ${{ secrets.ERROR_MENTION_NAME }}
-      SUCCESS_MENTION_ID: ${{ secrets.SUCCESS_MENTION_ID }}
-      SUCCESS_MENTION_NAME: ${{ secrets.SUCCESS_MENTION_NAME }}
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -29,7 +23,6 @@ jobs:
           echo "ERROR_MENTION_NAME='${ERROR_MENTION_NAME}'" >> .env
           echo "SUCCESS_MENTION_ID='${SUCCESS_MENTION_ID}'" >> .env
           echo "SUCCESS_MENTION_NAME='${SUCCESS_MENTION_NAME}'" >> .env
-
       - name: Print environment variables
         run: |
           source .env
@@ -37,7 +30,6 @@ jobs:
           echo "ERROR_MENTION_NAME: $ERROR_MENTION_NAME"
           echo "SUCCESS_MENTION_ID: $SUCCESS_MENTION_ID"
           echo "SUCCESS_MENTION_NAME: $SUCCESS_MENTION_NAME"
-
       - name: Send notification to Microsoft Teams
         if: always()
         uses: ./.github/actions/build_and_notify
