@@ -1,4 +1,5 @@
-name: 'New Workflow'
+name: 'Updated Workflow'
+
 on:
   push:
     branches:
@@ -11,7 +12,27 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      
+        
+      - name: Get commit information
+        shell: bash
+        id: commit_info
+        run: |
+          COMMIT_HASH=$(git rev-parse HEAD)
+          BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
+          echo "COMMIT_HASH=${COMMIT_HASH}" >> $GITHUB_ENV
+          echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_ENV
+      - name: Load environment variables from env.json
+        shell: bash
+        run: |
+          ENV=$(cat env.json)
+          ERROR_MENTION_ID=$(echo $ENV | jq -r '.ERROR_MENTION_ID')
+          ERROR_MENTION_NAME=$(echo $ENV | jq -r '.ERROR_MENTION_NAME')
+          SUCCESS_MENTION_ID=$(echo $ENV | jq -r '.SUCCESS_MENTION_ID')
+          SUCCESS_MENTION_NAME=$(echo $ENV | jq -r '.SUCCESS_MENTION_NAME')
+          echo "ERROR_MENTION_ID=$ERROR_MENTION_ID" >> $GITHUB_ENV
+          echo "ERROR_MENTION_NAME=$ERROR_MENTION_NAME" >> $GITHUB_ENV
+          echo "SUCCESS_MENTION_ID=$SUCCESS_MENTION_ID" >> $GITHUB_ENV
+          echo "SUCCESS_MENTION_NAME=$SUCCESS_MENTION_NAME" >> $GITHUB_ENV
       - name: Build
         shell: bash
         run: echo "Building"
@@ -24,48 +45,12 @@ jobs:
       #   shell: bash
       #   run: exit 1
 
-      - name: Load environment variables from env.json
-        id: load_env
-        uses: actions/github-script@v6.3.3
-        with:
-          script: |
-            const fs = require('fs');
-            const envFile = 'env.json';
-            const data = fs.readFileSync(envFile, 'utf8');
-            const env = JSON.parse(data);
-            console.log('Parsed environment variables:', env);
-
-            process.env.ERROR_MENTION_ID = env.ERROR_MENTION_ID;
-            process.env.ERROR_MENTION_NAME = env.ERROR_MENTION_NAME;
-            process.env.SUCCESS_MENTION_ID = env.SUCCESS_MENTION_ID;
-            process.env.SUCCESS_MENTION_NAME = env.SUCCESS_MENTION_NAME;
-
-            return {
-              env: {
-                ERROR_MENTION_ID: env.ERROR_MENTION_ID,
-                ERROR_MENTION_NAME: env.ERROR_MENTION_NAME,
-                SUCCESS_MENTION_ID: env.SUCCESS_MENTION_ID,
-                SUCCESS_MENTION_NAME: env.SUCCESS_MENTION_NAME
-              }
-            };
-            
-      - name: Output loaded environment variables
-        run: |
-         echo "Loaded environment variables: ${{ toJson(steps.load_env.outputs.env) }}"
-
-      - name: Echo environment variables
-        run: |
-         echo "ERROR_MENTION_ID: ${{ steps.load_env.outputs.env.ERROR_MENTION_ID }}"
-         echo "ERROR_MENTION_NAME: ${{ steps.load_env.outputs.env.ERROR_MENTION_NAME }}"
-         echo "SUCCESS_MENTION_ID: ${{ steps.load_env.outputs.env.SUCCESS_MENTION_ID }}"
-         echo "SUCCESS_MENTION_NAME: ${{ steps.load_env.outputs.env.SUCCESS_MENTION_NAME }}"
-  
       - name: Send notification to Microsoft Teams
         if: always()
         uses: ./.github/actions/build_and_notify
         with:
           action-name: ${{ github.workflow }}
-          error-mention-id: ${{ steps.load_env.outputs.env.ERROR_MENTION_ID }}
-          error-mention-name: ${{ steps.load_env.outputs.env.ERROR_MENTION_NAME }}
-          success-mention-id: ${{ steps.load_env.outputs.env.SUCCESS_MENTION_ID }}
-          success-mention-name: ${{ steps.load_env.outputs.env.SUCCESS_MENTION_NAME }}
+          error-mention-id: ${{ env.ERROR_MENTION_ID }}
+          error-mention-name: ${{ env.ERROR_MENTION_NAME }}
+          success-mention-id: ${{ env.SUCCESS_MENTION_ID }}
+          success-mention-name: ${{ env.SUCCESS_MENTION_NAME }}
