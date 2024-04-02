@@ -8,6 +8,18 @@ inputs:
   workflow-name:
     description: 'Name of the workflow'
     required: true
+  error-mention-id:
+    description: 'ID for mentioning in case of error'
+    required: true
+  error-mention-name:
+    description: 'Name for mentioning in case of error'
+    required: true
+  success-mention-id:
+    description: 'ID for mentioning in case of success'
+    required: true
+  success-mention-name:
+    description: 'Name for mentioning in case of success'
+    required: true
 
 runs:
   using: 'composite'
