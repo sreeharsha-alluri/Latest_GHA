@@ -1,3 +1,5 @@
+name: 'Composite action for building and notifying'
+
 description: 'Composite action for building and notifying'
 
 inputs:
@@ -5,9 +7,6 @@ inputs:
     description: 'Name for the action'
     required: true
     default: 'Composite Action' # Provide a default value if needed
-  workflow-name:
-    description: 'Name of the workflow'
-    required: true
   error-mention-id:
     description: 'ID for mentioning in case of error'
     required: true
@@ -26,25 +25,6 @@ runs:
   steps:
     - name: Checkout code
       uses: actions/checkout@v2
-      
-    - name: Get commit information
-      shell: bash
-      id: commit_info
-      run: |
-        COMMIT_HASH=$(git rev-parse HEAD)
-        BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
-        echo "COMMIT_HASH=${COMMIT_HASH}" >> $GITHUB_ENV
-        echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_ENV
-
-    - name: Determine job status
-      shell: bash
-      id: job_status
-      run: |
-        if [ ${{ job.status }} == "failure" ]; then
-          echo "STATUS=FAIL" >> $GITHUB_ENV
-        else
-          echo "STATUS=PASS" >> $GITHUB_ENV
-        fi
 
     - name: Send notification to Microsoft Teams
       shell: bash
@@ -53,7 +33,7 @@ runs:
         # Get the GitHub workflow run URL
         JOB_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
         
-        # Get the commit information from environment variables
+        # Get the commit information from the environment variables
         COMMIT_HASH=$COMMIT_HASH
         BRANCH_NAME=$BRANCH_NAME
         
@@ -62,9 +42,6 @@ runs:
         
         # Get the build number
         BUILD_NUMBER="${{ github.run_number }}"
-        
-        # Determine the job status from environment variables
-        STATUS=$STATUS
         
         # Determine the color and mentioned ID/Name based on status
         if [ "$STATUS" == "FAIL" ]; then
