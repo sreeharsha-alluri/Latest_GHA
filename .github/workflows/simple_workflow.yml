@@ -30,29 +30,24 @@ jobs:
               SUCCESS_MENTION_NAME: env.SUCCESS_MENTION_NAME
             };
             console.log(result);
-            return result;
-
-      - name: Set output variables
-        id: set_outputs
-        run: |
-          echo "::set-output name=ERROR_MENTION_ID::${{ steps.load_env.outputs.result.ERROR_MENTION_ID }}"
-          echo "::set-output name=ERROR_MENTION_NAME::${{ steps.load_env.outputs.result.ERROR_MENTION_NAME }}"
-          echo "::set-output name=SUCCESS_MENTION_ID::${{ steps.load_env.outputs.result.SUCCESS_MENTION_ID }}"
-          echo "::set-output name=SUCCESS_MENTION_NAME::${{ steps.load_env.outputs.result.SUCCESS_MENTION_NAME }}"
+            process.env.ERROR_MENTION_ID = result.ERROR_MENTION_ID;
+            process.env.ERROR_MENTION_NAME = result.ERROR_MENTION_NAME;
+            process.env.SUCCESS_MENTION_ID = result.SUCCESS_MENTION_ID;
+            process.env.SUCCESS_MENTION_NAME = result.SUCCESS_MENTION_NAME;
 
       - name: Print environment variables
         run: |
-          echo "ERROR_MENTION_ID: ${{ steps.set_outputs.outputs.ERROR_MENTION_ID }}"
-          echo "ERROR_MENTION_NAME: ${{ steps.set_outputs.outputs.ERROR_MENTION_NAME }}"
-          echo "SUCCESS_MENTION_ID: ${{ steps.set_outputs.outputs.SUCCESS_MENTION_ID }}"
-          echo "SUCCESS_MENTION_NAME: ${{ steps.set_outputs.outputs.SUCCESS_MENTION_NAME }}"
+          echo "ERROR_MENTION_ID: ${{ env.ERROR_MENTION_ID }}"
+          echo "ERROR_MENTION_NAME: ${{ env.ERROR_MENTION_NAME }}"
+          echo "SUCCESS_MENTION_ID: ${{ env.SUCCESS_MENTION_ID }}"
+          echo "SUCCESS_MENTION_NAME: ${{ env.SUCCESS_MENTION_NAME }}"
 
       - name: Send notification to Microsoft Teams
         if: always()
         uses: ./.github/actions/build_and_notify
         with:
           action-name: ${{ github.workflow }}
-          error-mention-id: ${{ steps.set_outputs.outputs.ERROR_MENTION_ID }}
-          error-mention-name: ${{ steps.set_outputs.outputs.ERROR_MENTION_NAME }}
-          success-mention-id: ${{ steps.set_outputs.outputs.SUCCESS_MENTION_ID }}
-          success-mention-name: ${{ steps.set_outputs.outputs.SUCCESS_MENTION_NAME }}
+          error-mention-id: ${{ env.ERROR_MENTION_ID }}
+          error-mention-name: ${{ env.ERROR_MENTION_NAME }}
+          success-mention-id: ${{ env.SUCCESS_MENTION_ID }}
+          success-mention-name: ${{ env.SUCCESS_MENTION_NAME }}
