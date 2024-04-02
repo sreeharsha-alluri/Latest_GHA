@@ -20,9 +20,12 @@ jobs:
           const envFile = 'env.json';
           const data = fs.readFileSync(envFile, 'utf8');
           const env = JSON.parse(data);
-
-          const envString = `ERROR_MENTION_ID=${env.ERROR_MENTION_ID}\nERROR_MENTION_NAME=${env.ERROR_MENTION_NAME}\nSUCCESS_MENTION_ID=${env.SUCCESS_MENTION_ID}\nSUCCESS_MENTION_NAME=${env.SUCCESS_MENTION_NAME}`;
-
+          
+          const envString = 'ERROR_MENTION_ID=' + env.ERROR_MENTION_ID + '\n' +
+                             'ERROR_MENTION_NAME=' + env.ERROR_MENTION_NAME + '\n' +
+                             'SUCCESS_MENTION_ID=' + env.SUCCESS_MENTION_ID + '\n' +
+                             'SUCCESS_MENTION_NAME=' + env.SUCCESS_MENTION_NAME;
+          
           fs.writeFileSync('.env', envString);
           "
 
