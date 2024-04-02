@@ -9,6 +9,9 @@ jobs:
   build-and-notify:
     runs-on: ubuntu-latest
 
+    outputs:
+      env: ${{ steps.load_env.outputs.env }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -29,10 +32,6 @@ jobs:
             const data = fs.readFileSync(envFile, 'utf8');
             const env = JSON.parse(data);
             console.log('Parsed environment variables:', env);
-            process.env.ERROR_MENTION_ID = env.ERROR_MENTION_ID;
-            process.env.ERROR_MENTION_NAME = env.ERROR_MENTION_NAME;
-            process.env.SUCCESS_MENTION_ID = env.SUCCESS_MENTION_ID;
-            process.env.SUCCESS_MENTION_NAME = env.SUCCESS_MENTION_NAME;
             return {
               env: {
                 ERROR_MENTION_ID: env.ERROR_MENTION_ID,
@@ -62,3 +61,14 @@ jobs:
           error-mention-name: ${{ steps.load_env.outputs.env.ERROR_MENTION_NAME }}
           success-mention-id: ${{ steps.load_env.outputs.env.SUCCESS_MENTION_ID }}
           success-mention-name: ${{ steps.load_env.outputs.env.SUCCESS_MENTION_NAME }}
+
+  another-job:
+    needs: build-and-notify
+    runs-on: ubuntu-latest
+    steps:
+      - name: Use environment variables from previous job
+        run: |
+          echo "ERROR_MENTION_ID: ${{ needs.build-and-notify.outputs.env.ERROR_MENTION_ID }}"
+          echo "ERROR_MENTION_NAME: ${{ needs.build-and-notify.outputs.env.ERROR_MENTION_NAME }}"
+          echo "SUCCESS_MENTION_ID: ${{ needs.build-and-notify.outputs.env.SUCCESS_MENTION_ID }}"
+          echo "SUCCESS_MENTION_NAME: ${{ needs.build-and-notify.outputs.env.SUCCESS_MENTION_NAME }}"
