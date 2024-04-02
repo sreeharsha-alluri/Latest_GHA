@@ -26,20 +26,19 @@ jobs:
         id: load_env
         uses: actions/github-script@v6.3.3
         with:
-          script: |
-            const fs = require('fs');
-            const envFile = 'env.json';
-            const data = fs.readFileSync(envFile, 'utf8');
-            const env = JSON.parse(data);
-            console.log('Parsed environment variables:', env);
-            return {
-              env: {
-                ERROR_MENTION_ID: env.ERROR_MENTION_ID,
-                ERROR_MENTION_NAME: env.ERROR_MENTION_NAME,
-                SUCCESS_MENTION_ID: env.SUCCESS_MENTION_ID,
-                SUCCESS_MENTION_NAME: env.SUCCESS_MENTION_NAME
-              }
-            };
+         script: |
+          const fs = require('fs');
+          const envFile = 'env.json';
+          const data = fs.readFileSync(envFile, 'utf8');
+          const env = JSON.parse(data);
+          console.log('Parsed environment variables:', env);
+          return {
+          ERROR_MENTION_ID: env.ERROR_MENTION_ID,
+          ERROR_MENTION_NAME: env.ERROR_MENTION_NAME,
+          SUCCESS_MENTION_ID: env.SUCCESS_MENTION_ID,
+          SUCCESS_MENTION_NAME: env.SUCCESS_MENTION_NAME
+          };
+
             
       - name: Output loaded environment variables
         run: |
