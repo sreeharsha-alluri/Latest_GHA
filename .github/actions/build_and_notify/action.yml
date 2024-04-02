@@ -39,6 +39,10 @@ runs:
     - name: Checkout code
       uses: actions/checkout@v2
 
+    - name: Get branch name
+      id: branch_name
+      run: echo "::set-env name=BRANCH_NAME::$(basename $GITHUB_REF)"
+
     - name: Send notification to Microsoft Teams
       shell: bash
       if: always()
@@ -106,7 +110,7 @@ runs:
                   },
                   {
                     "type": "TextBlock",
-                    "text": "**Branch Name:** '"${{ github.ref/heads/ }}"'",
+                    "text": "**Branch Name:** '"${{ steps.branch_name.outputs.BRANCH_NAME }}"'",
                     "color": "'"$color"'"
                   },
                   {
