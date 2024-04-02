@@ -35,35 +35,25 @@ jobs:
             const data = fs.readFileSync(envFile, 'utf8');
             const env = JSON.parse(data);
             console.log('Parsed environment variables:', env);
-            return { 
-              ERROR_MENTION_ID: env.ERROR_MENTION_ID,
-              ERROR_MENTION_NAME: env.ERROR_MENTION_NAME,
-              SUCCESS_MENTION_ID: env.SUCCESS_MENTION_ID,
-              SUCCESS_MENTION_NAME: env.SUCCESS_MENTION_NAME
-            };
-      
-      - name: Set environment variable outputs
-        id: set_outputs
-        run: |
-          echo "::set-output name=ERROR_MENTION_ID::${{ steps.load_env.outputs.ERROR_MENTION_ID }}"
-          echo "::set-output name=ERROR_MENTION_NAME::${{ steps.load_env.outputs.ERROR_MENTION_NAME }}"
-          echo "::set-output name=SUCCESS_MENTION_ID::${{ steps.load_env.outputs.SUCCESS_MENTION_ID }}"
-          echo "::set-output name=SUCCESS_MENTION_NAME::${{ steps.load_env.outputs.SUCCESS_MENTION_NAME }}"
+            process.env.ERROR_MENTION_ID = env.ERROR_MENTION_ID;
+            process.env.ERROR_MENTION_NAME = env.ERROR_MENTION_NAME;
+            process.env.SUCCESS_MENTION_ID = env.SUCCESS_MENTION_ID;
+            process.env.SUCCESS_MENTION_NAME = env.SUCCESS_MENTION_NAME;
 
       - name: Output loaded environment variables
         run: |
           echo "Loaded environment variables:"
-          echo "ERROR_MENTION_ID: ${{ steps.load_env.outputs.ERROR_MENTION_ID }}"
-          echo "ERROR_MENTION_NAME: ${{ steps.load_env.outputs.ERROR_MENTION_NAME }}"
-          echo "SUCCESS_MENTION_ID: ${{ steps.load_env.outputs.SUCCESS_MENTION_ID }}"
-          echo "SUCCESS_MENTION_NAME: ${{ steps.load_env.outputs.SUCCESS_MENTION_NAME }}"
+          echo "ERROR_MENTION_ID: $ERROR_MENTION_ID"
+          echo "ERROR_MENTION_NAME: $ERROR_MENTION_NAME"
+          echo "SUCCESS_MENTION_ID: $SUCCESS_MENTION_ID"
+          echo "SUCCESS_MENTION_NAME: $SUCCESS_MENTION_NAME"
       
       - name: Send notification to Microsoft Teams
         if: always()
         uses: ./.github/actions/build_and_notify
         with:
           action-name: ${{ github.workflow }}
-          error-mention-id: ${{ steps.set_outputs.outputs.ERROR_MENTION_ID }}
-          error-mention-name: ${{ steps.set_outputs.outputs.ERROR_MENTION_NAME }}
-          success-mention-id: ${{ steps.set_outputs.outputs.SUCCESS_MENTION_ID }}
-          success-mention-name: ${{ steps.set_outputs.outputs.SUCCESS_MENTION_NAME }}
+          error-mention-id: ${{ env.ERROR_MENTION_ID }}
+          error-mention-name: ${{ env.ERROR_MENTION_NAME }}
+          success-mention-id: ${{ env.SUCCESS_MENTION_ID }}
+          success-mention-name: ${{ env.SUCCESS_MENTION_NAME }}
