@@ -35,6 +35,25 @@ runs:
     - name: Checkout code
       uses: actions/checkout@v2
 
+    - name: Get commit information
+      shell: bash
+      id: commit_info
+      run: |
+        COMMIT_HASH=$(git rev-parse HEAD)
+        BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
+        echo "COMMIT_HASH=${COMMIT_HASH}" >> $GITHUB_ENV
+        echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_ENV
+
+    - name: Determine job status
+      shell: bash
+      id: job_status
+      run: |
+        if [ ${{ job.status }} == "failure" ]; then
+          echo "STATUS=FAIL" >> $GITHUB_ENV
+        else
+          echo "STATUS=PASS" >> $GITHUB_ENV
+        fi
+        
     - name: Send notification to Microsoft Teams
       shell: bash
       if: always()
