@@ -16,17 +16,19 @@ jobs:
       - name: Load environment variables from env.json
         run: |
           echo "::group::Load Environment Variables"
-          node -e "const fs = require('fs'); \
-                  const envFile = 'env.json'; \
-                  const data = fs.readFileSync(envFile, 'utf8'); \
+          node -e 'const fs = require("fs"); \
+                  const envFile = "env.json"; \
+                  const data = fs.readFileSync(envFile, "utf8"); \
                   const env = JSON.parse(data); \
-                  console.log('Parsed environment variables:', env); \
-                  console.log(`ERROR_MENTION_ID=${env.ERROR_MENTION_ID}`); \
-                  console.log(`ERROR_MENTION_NAME=${env.ERROR_MENTION_NAME}`); \
-                  echo "ERROR_MENTION_ID=${env.ERROR_MENTION_ID}" >> $GITHUB_ENV; \
-                  echo "ERROR_MENTION_NAME=${env.ERROR_MENTION_NAME}" >> $GITHUB_ENV; \
-                  echo "SUCCESS_MENTION_ID=${env.SUCCESS_MENTION_ID}" >> $GITHUB_ENV; \
-                  echo "SUCCESS_MENTION_NAME=${env.SUCCESS_MENTION_NAME}" >> $GITHUB_ENV;"
+                  console.log("Parsed environment variables:", env); \
+                  console.log("ERROR_MENTION_ID=" + env.ERROR_MENTION_ID); \
+                  console.log("ERROR_MENTION_NAME=" + env.ERROR_MENTION_NAME); \
+                  console.log("SUCCESS_MENTION_ID=" + env.SUCCESS_MENTION_ID); \
+                  console.log("SUCCESS_MENTION_NAME=" + env.SUCCESS_MENTION_NAME); \
+                  console.log("::set-env name=ERROR_MENTION_ID::" + env.ERROR_MENTION_ID); \
+                  console.log("::set-env name=ERROR_MENTION_NAME::" + env.ERROR_MENTION_NAME); \
+                  console.log("::set-env name=SUCCESS_MENTION_ID::" + env.SUCCESS_MENTION_ID); \
+                  console.log("::set-env name=SUCCESS_MENTION_NAME::" + env.SUCCESS_MENTION_NAME);'
           echo "::endgroup::"
 
       - name: Send notification to Microsoft Teams
