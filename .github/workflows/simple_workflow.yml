@@ -23,6 +23,19 @@ jobs:
           echo "ERROR_MENTION_NAME=${ERROR_MENTION_NAME}" >> $GITHUB_ENV
           echo "SUCCESS_MENTION_ID=${SUCCESS_MENTION_ID}" >> $GITHUB_ENV
           echo "SUCCESS_MENTION_NAME=${SUCCESS_MENTION_NAME}" >> $GITHUB_ENV
+
+      - name: Build
+        shell: bash
+        run: echo "Building"
+
+      - name: Test
+        shell: bash
+        run: echo "Testing"
+
+      # - name: Error
+      #   shell: bash
+      #   run: exit 1
+      
       - name: Print environment variables
         run: |
           echo "ERROR_MENTION_ID: ${{ env.ERROR_MENTION_ID }}"
@@ -38,6 +51,5 @@ jobs:
           error-mention-name: ${{ env.ERROR_MENTION_NAME }}
           success-mention-id: ${{ env.SUCCESS_MENTION_ID }}
           success-mention-name: ${{ env.SUCCESS_MENTION_NAME }}
-          commit-hash: ${{ github.sha }}
-          branch-name: ${{ github.ref_name }}
-          status: 'PASS' # You need to determine the status based on your workflow logic
+
+      
