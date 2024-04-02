@@ -34,6 +34,7 @@ jobs:
             const envFile = 'env.json';
             const data = fs.readFileSync(envFile, 'utf8');
             const env = JSON.parse(data);
+            console.log(env);
             return env
 
       - name: Send notification to Microsoft Teams
