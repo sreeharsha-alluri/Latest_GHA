@@ -34,9 +34,10 @@ runs:
   steps:
     - name: Checkout code
       uses: actions/checkout@v2
+      with:
+        fetch-depth: 0  # Fetch all history for accurate commit information
 
     - name: Get commit information
-      shell: bash
       id: commit_info
       run: |
         COMMIT_HASH=$(git rev-parse HEAD)
@@ -45,7 +46,6 @@ runs:
         echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_ENV
 
     - name: Determine job status
-      shell: bash
       id: job_status
       run: |
         if [ ${{ job.status }} == "failure" ]; then
@@ -55,7 +55,6 @@ runs:
         fi
         
     - name: Send notification to Microsoft Teams
-      shell: bash
       if: always()
       run: |
         # Get the GitHub workflow run URL
@@ -121,12 +120,12 @@ runs:
                   },
                   {
                     "type": "TextBlock",
-                    "text": "**Branch Name:** '"${{ github.ref }}"'",
+                    "text": "**Branch Name:** '"${{ env.BRANCH_NAME }}"'",
                     "color": "'"$color"'"
                   },
                   {
                     "type": "TextBlock",
-                    "text": "**Latest Commit:** '"${{ inputs.commit-hash }}"'",
+                    "text": "**Latest Commit:** '"${{ env.COMMIT_HASH }}"'",
                     "color": "'"$color"'"
                   }
                 ],
