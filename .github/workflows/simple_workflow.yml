@@ -23,16 +23,6 @@ jobs:
           echo "COMMIT_HASH=${COMMIT_HASH}" >> $GITHUB_ENV
           echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_ENV
 
-      - name: Determine job status
-        shell: bash
-        id: job_status
-        run: |
-          if [ ${{ job.status }} == "failure" ]; then
-            echo "STATUS=FAIL" >> $GITHUB_ENV
-          else
-            echo "STATUS=PASS" >> $GITHUB_ENV
-          fi
-
       - name: Load environment variables from env.json
         shell: bash
         run: |
@@ -45,6 +35,18 @@ jobs:
           echo "ERROR_MENTION_NAME=$ERROR_MENTION_NAME" >> $GITHUB_ENV
           echo "SUCCESS_MENTION_ID=$SUCCESS_MENTION_ID" >> $GITHUB_ENV
           echo "SUCCESS_MENTION_NAME=$SUCCESS_MENTION_NAME" >> $GITHUB_ENV
+
+      - name: Build
+        shell: bash
+        run: echo "Building"
+
+      - name: Test
+        shell: bash
+        run: echo "Testing"
+
+      # - name: Error
+      #   shell: bash
+      #   run: exit 1
 
       - name: Send notification to Microsoft Teams
         if: always()
