@@ -23,6 +23,7 @@ jobs:
           echo "ERROR_MENTION_NAME='${ERROR_MENTION_NAME}'" >> .env
           echo "SUCCESS_MENTION_ID='${SUCCESS_MENTION_ID}'" >> .env
           echo "SUCCESS_MENTION_NAME='${SUCCESS_MENTION_NAME}'" >> .env
+
       - name: Print environment variables
         run: |
           source .env
@@ -30,8 +31,8 @@ jobs:
           echo "ERROR_MENTION_NAME: $ERROR_MENTION_NAME"
           echo "SUCCESS_MENTION_ID: $SUCCESS_MENTION_ID"
           echo "SUCCESS_MENTION_NAME: $SUCCESS_MENTION_NAME"
+
       - name: Send notification to Microsoft Teams
-         source .env
         if: always()
         uses: ./.github/actions/build_and_notify
         with:
