@@ -25,12 +25,23 @@ jobs:
       #   shell: bash
       #   run: exit 1
 
+      - name: Load environment variables from env.json
+        id: load_env
+        uses: actions/github-script@v6.3.3
+        with:
+          script: |
+            const fs = require('fs');
+            const envFile = 'env.json';
+            const data = fs.readFileSync(envFile, 'utf8');
+            const env = JSON.parse(data);
+            return env
+
       - name: Send notification to Microsoft Teams
         if: always()
         uses: ./.github/actions/build_and_notify
         with:
           action-name: ${{ github.workflow }}
-          error-mention-id: ${{ env.ERROR_MENTION_ID }}
-          error-mention-name: ${{ env.ERROR_MENTION_NAME }}
-          success-mention-id: ${{ env.SUCCESS_MENTION_ID }}
-          success-mention-name: ${{ env.SUCCESS_MENTION_NAME }}
+          error-mention-id: ${{ steps.load_env.outputs.ERROR_MENTION_ID }}
+          error-mention-name: ${{ steps.load_env.outputs.ERROR_MENTION_NAME }}
+          success-mention-id: ${{ steps.load_env.outputs.SUCCESS_MENTION_ID }}
+          success-mention-name: ${{ steps.load_env.outputs.SUCCESS_MENTION_NAME }}
