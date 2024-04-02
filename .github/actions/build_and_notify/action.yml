@@ -19,6 +19,15 @@ inputs:
   success-mention-name:
     description: 'Name for mentioning in case of success'
     required: true
+  commit-hash:
+    description: 'Commit hash of the latest commit'
+    required: true
+  branch-name:
+    description: 'Name of the branch where the workflow is triggered'
+    required: true
+  status:
+    description: 'Status of the workflow (e.g., PASS or FAIL)'
+    required: true
 
 runs:
   using: 'composite'
@@ -32,10 +41,6 @@ runs:
       run: |
         # Get the GitHub workflow run URL
         JOB_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-        
-        # Get the commit information from the environment variables
-        COMMIT_HASH=$COMMIT_HASH
-        BRANCH_NAME=$BRANCH_NAME
         
         # Get the repository URL
         REPO_URL="[${{ github.repository }}](${{ github.event.repository.html_url }})"
@@ -97,12 +102,12 @@ runs:
                   },
                   {
                     "type": "TextBlock",
-                    "text": "**Branch Name:** '"$BRANCH_NAME"'",
+                    "text": "**Branch Name:** '"${{ github.ref }}"'",
                     "color": "'"$color"'"
                   },
                   {
                     "type": "TextBlock",
-                    "text": "**Latest Commit:** '"$COMMIT_HASH"'",
+                    "text": "**Latest Commit:** '"${{ inputs.commit-hash }}"'",
                     "color": "'"$color"'"
                   }
                 ],
