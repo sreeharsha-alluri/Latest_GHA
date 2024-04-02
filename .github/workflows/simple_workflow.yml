@@ -8,34 +8,11 @@ on:
 jobs:
   build-and-notify:
     runs-on: ubuntu-latest
-    environment: GHA_Environment_Variables
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-        
-      - name: Get commit information
-        shell: bash
-        id: commit_info
-        run: |
-          COMMIT_HASH=$(git rev-parse HEAD)
-          BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
-          echo "COMMIT_HASH=${COMMIT_HASH}" >> $GITHUB_ENV
-          echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_ENV
-
-      - name: Load environment variables from env.json
-        shell: bash
-        run: |
-          ENV=$(cat env.json)
-          ERROR_MENTION_ID=$(echo $ENV | jq -r '.ERROR_MENTION_ID')
-          ERROR_MENTION_NAME=$(echo $ENV | jq -r '.ERROR_MENTION_NAME')
-          SUCCESS_MENTION_ID=$(echo $ENV | jq -r '.SUCCESS_MENTION_ID')
-          SUCCESS_MENTION_NAME=$(echo $ENV | jq -r '.SUCCESS_MENTION_NAME')
-          echo "ERROR_MENTION_ID=$ERROR_MENTION_ID" >> $GITHUB_ENV
-          echo "ERROR_MENTION_NAME=$ERROR_MENTION_NAME" >> $GITHUB_ENV
-          echo "SUCCESS_MENTION_ID=$SUCCESS_MENTION_ID" >> $GITHUB_ENV
-          echo "SUCCESS_MENTION_NAME=$SUCCESS_MENTION_NAME" >> $GITHUB_ENV
-
+      
       - name: Build
         shell: bash
         run: echo "Building"
@@ -44,9 +21,9 @@ jobs:
         shell: bash
         run: echo "Testing"
 
-      - name: Error
-        shell: bash
-        run: exit 1
+      # - name: Error
+      #   shell: bash
+      #   run: exit 1
 
       - name: Send notification to Microsoft Teams
         if: always()
