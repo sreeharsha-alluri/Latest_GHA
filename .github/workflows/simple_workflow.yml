@@ -35,10 +35,18 @@ jobs:
             const data = fs.readFileSync(envFile, 'utf8');
             const env = JSON.parse(data);
             console.log('Parsed environment variables:', env);
+
             process.env.ERROR_MENTION_ID = env.ERROR_MENTION_ID;
             process.env.ERROR_MENTION_NAME = env.ERROR_MENTION_NAME;
             process.env.SUCCESS_MENTION_ID = env.SUCCESS_MENTION_ID;
             process.env.SUCCESS_MENTION_NAME = env.SUCCESS_MENTION_NAME;
+
+            return {
+            ERROR_MENTION_ID: env.ERROR_MENTION_ID,
+            ERROR_MENTION_NAME: env.ERROR_MENTION_NAME,
+            SUCCESS_MENTION_ID: env.SUCCESS_MENTION_ID,
+            SUCCESS_MENTION_NAME: env.SUCCESS_MENTION_NAME
+            };
 
       - name: Output loaded environment variables
         run: |
