@@ -36,7 +36,7 @@ jobs:
             const env = JSON.parse(data);
             console.log('Parsed environment variables:', env);
             return { env: env }
-
+            
       - name: Output loaded environment variables
         run: |
          echo "Loaded environment variables: ${{ toJson(steps.load_env.outputs.env) }}"
