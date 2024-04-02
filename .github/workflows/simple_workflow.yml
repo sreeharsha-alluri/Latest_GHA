@@ -31,6 +31,7 @@ jobs:
           echo "SUCCESS_MENTION_ID: $SUCCESS_MENTION_ID"
           echo "SUCCESS_MENTION_NAME: $SUCCESS_MENTION_NAME"
       - name: Send notification to Microsoft Teams
+         source .env
         if: always()
         uses: ./.github/actions/build_and_notify
         with:
