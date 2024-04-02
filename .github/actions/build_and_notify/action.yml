@@ -24,6 +24,7 @@ runs:
   using: 'composite'
   steps:
     - name: Parse environment variables
+      shell: bash
       id: parse_env
       run: |
         ERROR_MENTION_ID=$(grep -Po '"ERROR_MENTION_ID": *\K"[^"]*"' env.json | tr -d '"')
