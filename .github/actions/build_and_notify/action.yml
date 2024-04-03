@@ -24,6 +24,7 @@ runs:
   using: 'composite'
   steps:
     - name: Parse environment variables
+      shell: bash
       id: parse_env
       run: |
         ERROR_MENTION_ID=$(grep -Po '"ERROR_MENTION_ID": *\K"[^"]*"' env.json | tr -d '"')
@@ -36,6 +37,7 @@ runs:
         echo "SUCCESS_MENTION_NAME=${SUCCESS_MENTION_NAME}" >> $GITHUB_ENV
 
     - name: Print environment variables
+      shell: bash
       run: |
         echo "ERROR_MENTION_ID: ${{ env.ERROR_MENTION_ID }}"
         echo "ERROR_MENTION_NAME: ${{ env.ERROR_MENTION_NAME }}"
