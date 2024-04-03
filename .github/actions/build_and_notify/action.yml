@@ -37,6 +37,7 @@ runs:
         echo "SUCCESS_MENTION_NAME=${SUCCESS_MENTION_NAME}" >> $GITHUB_ENV
 
     - name: Print environment variables
+      shell: bash
       run: |
         echo "ERROR_MENTION_ID: ${{ env.ERROR_MENTION_ID }}"
         echo "ERROR_MENTION_NAME: ${{ env.ERROR_MENTION_NAME }}"
@@ -47,6 +48,7 @@ runs:
       uses: actions/checkout@v2
 
     - name: Get branch name
+      shell: bash
       id: get_branch
       run: echo "BRANCH_NAME=$(basename $GITHUB_REF)" >> $GITHUB_ENV
 
