@@ -24,29 +24,6 @@ jobs:
           echo "COMMIT_HASH=${COMMIT_HASH}" >> $GITHUB_ENV
           echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_ENV
 
-      - name: Parse environment variables
-        shell: bash
-        id: parse_env
-        run: |
-          ERROR_MENTION_ID=$(grep -Po '"ERROR_MENTION_ID": *\K"[^"]*"' env.json | tr -d '"')
-          ERROR_MENTION_NAME=$(grep -Po '"ERROR_MENTION_NAME": *\K"[^"]*"' env.json | tr -d '"')
-          SUCCESS_MENTION_ID=$(grep -Po '"SUCCESS_MENTION_ID": *\K"[^"]*"' env.json | tr -d '"')
-          SUCCESS_MENTION_NAME=$(grep -Po '"SUCCESS_MENTION_NAME": *\K"[^"]*"' env.json | tr -d '"')
-          echo "ERROR_MENTION_ID=${ERROR_MENTION_ID}" >> $GITHUB_ENV
-          echo "ERROR_MENTION_NAME=${ERROR_MENTION_NAME}" >> $GITHUB_ENV
-          echo "SUCCESS_MENTION_ID=${SUCCESS_MENTION_ID}" >> $GITHUB_ENV
-          echo "SUCCESS_MENTION_NAME=${SUCCESS_MENTION_NAME}" >> $GITHUB_ENV
-
-      - name: Print environment variables
-        shell: bash
-        run: |
-          echo "ERROR_MENTION_ID: ${{ env.ERROR_MENTION_ID }}"
-          echo "ERROR_MENTION_NAME: ${{ env.ERROR_MENTION_NAME }}"
-          echo "SUCCESS_MENTION_ID: ${{ env.SUCCESS_MENTION_ID }}"
-          echo "SUCCESS_MENTION_NAME: ${{ env.SUCCESS_MENTION_NAME }}"
-          echo "COMMIT_HASH: ${{ env.COMMIT_HASH }}"
-          echo "BRANCH_NAME: ${{ env.BRANCH_NAME }}"
-
       - name: Determine job status
         shell: bash
         id: job_status
