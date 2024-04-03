@@ -49,6 +49,7 @@ runs:
         echo "SUCCESS_MENTION_NAME: ${{ env.SUCCESS_MENTION_NAME }}"
 
     - name: Debug
+      shell: bash
       run: |
         ls -l # Check if env.json exists and see its permissions
         cat env.json # Check the contents of env.json
