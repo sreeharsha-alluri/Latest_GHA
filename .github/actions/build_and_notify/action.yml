@@ -23,6 +23,10 @@ inputs:
 runs:
   using: 'composite'
   steps:
+
+    - name: Checkout code
+      uses: actions/checkout@v2
+
     - name: Parse environment variables
       shell: bash
       id: parse_env
@@ -43,10 +47,12 @@ runs:
         echo "ERROR_MENTION_NAME: ${{ env.ERROR_MENTION_NAME }}"
         echo "SUCCESS_MENTION_ID: ${{ env.SUCCESS_MENTION_ID }}"
         echo "SUCCESS_MENTION_NAME: ${{ env.SUCCESS_MENTION_NAME }}"
-          
-    - name: Checkout code
-      uses: actions/checkout@v2
 
+    - name: Debug
+      run: |
+        ls -l # Check if env.json exists and see its permissions
+        cat env.json # Check the contents of env.json
+          
     - name: Get branch name
       shell: bash
       id: get_branch
