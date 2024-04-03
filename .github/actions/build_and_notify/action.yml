@@ -37,7 +37,6 @@ runs:
         echo "SUCCESS_MENTION_NAME=${SUCCESS_MENTION_NAME}" >> $GITHUB_ENV
 
     - name: Print environment variables
-      shell: bash
       run: |
         echo "ERROR_MENTION_ID: ${{ env.ERROR_MENTION_ID }}"
         echo "ERROR_MENTION_NAME: ${{ env.ERROR_MENTION_NAME }}"
@@ -48,9 +47,8 @@ runs:
       uses: actions/checkout@v2
 
     - name: Get branch name
-      shell: bash
-      id: branch_name
-      run: echo "::set-env name=BRANCH_NAME::$(basename $GITHUB_REF)"
+      id: get_branch
+      run: echo "BRANCH_NAME=$(basename $GITHUB_REF)" >> $GITHUB_ENV
 
     - name: Send notification to Microsoft Teams
       shell: bash
@@ -119,7 +117,7 @@ runs:
                   },
                   {
                     "type": "TextBlock",
-                    "text": "**Branch Name:** '"${{ steps.branch_name.outputs.BRANCH_NAME }}"'",
+                    "text": "**Branch Name:** '${{ env.BRANCH_NAME }}'",
                     "color": "'"$color"'"
                   },
                   {
