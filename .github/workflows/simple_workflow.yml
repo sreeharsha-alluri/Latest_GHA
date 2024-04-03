@@ -1,5 +1,5 @@
 
-name: New Workflow
+name: Updated New Workflow
 on:
   push:
     branches:
@@ -32,9 +32,9 @@ jobs:
         shell: bash
         run: echo "Testing"
 
-      - name: Error
-        shell: bash
-        run: exit 1
+      # - name: Error
+      #   shell: bash
+      #   run: exit 1
       
       - name: Print environment variables
         run: |
