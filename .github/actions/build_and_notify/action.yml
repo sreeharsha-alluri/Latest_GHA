@@ -14,6 +14,7 @@ runs:
       uses: actions/checkout@v2
 
     - name: Read configurations from config.json
+      shell: bash
       id: read_config
       run: |
         CONFIG=$(cat .github/config.json)
