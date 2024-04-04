@@ -24,7 +24,7 @@ runs:
       shell: bash
       id: job_status
       run: |
-        if [ "${{ job.status }}" == "failure" ]; then
+        if [ ${{ job.status }} == "failure" ]; then
           echo "STATUS=FAIL" >> $GITHUB_ENV
         else
           echo "STATUS=PASS" >> $GITHUB_ENV
