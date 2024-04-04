@@ -13,36 +13,31 @@ runs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Read configurations from config.json
+    - name: Extract values from configuration
       shell: bash
-      id: read_config
       run: |
-        CONFIG=$(cat .github/config.json)
-        echo "::set-output name=config::$CONFIG"
+        ERROR_MENTION_ID=$(grep -Po '"ERROR_MENTION_ID": *\K"[^"]*"' .github/config.json | tr -d '"')
+        ERROR_MENTION_NAME=$(grep -Po '"ERROR_MENTION_NAME": *\K"[^"]*"' .github/config.json | tr -d '"')
+        SUCCESS_MENTION_ID=$(grep -Po '"SUCCESS_MENTION_ID": *\K"[^"]*"' .github/config.json | tr -d '"')
+        SUCCESS_MENTION_NAME=$(grep -Po '"SUCCESS_MENTION_NAME": *\K"[^"]*"' .github/config.json | tr -d '"')
+        echo "ERROR_MENTION_ID=${ERROR_MENTION_ID}" >> $GITHUB_ENV
+        echo "ERROR_MENTION_NAME=${ERROR_MENTION_NAME}" >> $GITHUB_ENV
+        echo "SUCCESS_MENTION_ID=${SUCCESS_MENTION_ID}" >> $GITHUB_ENV
+        echo "SUCCESS_MENTION_NAME=${SUCCESS_MENTION_NAME}" >> $GITHUB_ENV
 
     - name: Determine job status
       shell: bash
-      id: job_status
       run: |
-        if [ "${{ job.status }}" == "failure" ]; then
+        if [ ${{ job.status }} == "failure" ]; then
           echo "STATUS=FAIL" >> $GITHUB_ENV
         else
           echo "STATUS=PASS" >> $GITHUB_ENV
         fi
-        
+
     - name: Send notification to Microsoft Teams
       shell: bash
       if: always()
       run: |
-        # Get configurations from the output of the previous step
-        CONFIG="${{ steps.read_config.outputs.config }}"
-
-        # Extract values from the configuration using bash string manipulation
-        ERROR_MENTION_ID=$(echo "$CONFIG" | grep -oP '"ERROR_MENTION_ID":.*?[^\\]",' | sed 's/"ERROR_MENTION_ID":"\([^"]*\)",/\1/')
-        ERROR_MENTION_NAME=$(echo "$CONFIG" | grep -oP '"ERROR_MENTION_NAME":.*?[^\\]",' | sed 's/"ERROR_MENTION_NAME":"\([^"]*\)",/\1/')
-        SUCCESS_MENTION_ID=$(echo "$CONFIG" | grep -oP '"SUCCESS_MENTION_ID":.*?[^\\]",' | sed 's/"SUCCESS_MENTION_ID":"\([^"]*\)",/\1/')
-        SUCCESS_MENTION_NAME=$(echo "$CONFIG" | grep -oP '"SUCCESS_MENTION_NAME":.*?[^\\]",' | sed 's/"SUCCESS_MENTION_NAME":"\([^"]*\)",/\1/')
-
         # Get the GitHub workflow run URL
         JOB_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
         
@@ -57,7 +52,7 @@ runs:
         BUILD_NUMBER="${{ github.run_number }}"
         
         # Determine the job status from environment variables
-        STATUS=$(cat $GITHUB_ENV | grep STATUS | cut -d'=' -f2)
+        STATUS=$STATUS
         
         # Determine the color and mentioned ID/Name based on status
         if [ "$STATUS" == "FAIL" ]; then
