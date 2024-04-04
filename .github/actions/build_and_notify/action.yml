@@ -24,12 +24,12 @@ runs:
       shell: bash
       id: job_status
       run: |
-        if [ ${{ job.status }} == "failure" ]; then
+        if [ "${{ job.status }}" == "failure" ]; then
           echo "STATUS=FAIL" >> $GITHUB_ENV
         else
           echo "STATUS=PASS" >> $GITHUB_ENV
         fi
-        
+
     - name: Send notification to Microsoft Teams
       shell: bash
       if: always()
@@ -57,7 +57,7 @@ runs:
         BUILD_NUMBER="${{ github.run_number }}"
         
         # Determine the job status from environment variables
-        STATUS=$STATUS
+        STATUS=$(cat $GITHUB_ENV | grep STATUS | cut -d'=' -f2)
         
         # Determine the color and mentioned ID/Name based on status
         if [ "$STATUS" == "FAIL" ]; then
