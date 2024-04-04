@@ -12,6 +12,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Build
+        shell: bash
+        run: echo "Building"
+
+      - name: Test
+        shell: bash
+        run: echo "Testing"
+
+      # - name: Error
+      #   shell: bash
+      #   run: exit 1
+
       - name: Run the Composite Action
         uses: ./.github/actions/build_and_notify
         with:
