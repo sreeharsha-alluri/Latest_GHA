@@ -51,7 +51,7 @@ runs:
         JOB_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
         
         # Get the commit information from environment variables
-        COMMIT_HASH="${GITHUB_SHA::8}" # Extracting first 8 characters of the SHA
+        COMMIT_HASH="${GITHUB_SHA}" 
         BRANCH_NAME="${GITHUB_REF#refs/heads/}" # Extracting branch name directly
         
         # Get the repository URL
