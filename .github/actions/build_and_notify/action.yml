@@ -13,6 +13,15 @@ runs:
     - name: Checkout code
       uses: actions/checkout@v2
 
+    - name: Get commit information
+      shell: bash
+      id: commit_info
+      run: |
+        COMMIT_HASH=$(git rev-parse HEAD)
+        BRANCH_NAME=$(git ls-remote --heads https://github.com/sreeharsha-alluri/Latest_GHA.git | grep -w "refs/heads/dev" | grep -vw "dev-ci-test" | awk '{print $2}' | awk -F '/' '{print $NF}')
+        echo "COMMIT_HASH=${COMMIT_HASH}" >> $GITHUB_ENV
+        echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_ENV
+
     - name: Extract values from configuration
       shell: bash
       run: |
