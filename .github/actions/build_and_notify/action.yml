@@ -1,18 +1,142 @@
-name: Updated New Workflow
-on:
-  push:
-    branches:
-      - main
+name: 'Composite action for building and notifying'
+description: 'Composite action for building and notifying'
 
-jobs:
-  build-and-notify:
-    runs-on: ubuntu-latest
+inputs:
+  action-name:
+    description: 'Name for the action'
+    required: true
+    default: 'Composite Action' # Provide a default value if needed
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Run the Composite Action
-        uses: ./.github/actions/build_and_notify
-        with:
-          action-name: ${{ github.workflow }}
+    - name: Read configurations from config.json
+      id: read_config
+      run: |
+        CONFIG=$(cat .github/config.json)
+        echo "::set-output name=config::$CONFIG"
+
+    - name: Determine job status
+      shell: bash
+      id: job_status
+      run: |
+        if [ ${{ job.status }} == "failure" ]; then
+          echo "STATUS=FAIL" >> $GITHUB_ENV
+        else
+          echo "STATUS=PASS" >> $GITHUB_ENV
+        fi
+
+    - name: Send notification to Microsoft Teams
+      shell: bash
+      if: always()
+      run: |
+        # Get configurations from the output of the previous step
+        CONFIG=$(echo "${{ steps.read_config.outputs.config }}")
+
+        # Extract values from the configuration using bash string manipulation
+        ERROR_MENTION_ID=$(echo "$CONFIG" | grep -oP '"ERROR_MENTION_ID":.*?[^\\]",' | sed 's/"ERROR_MENTION_ID":"\([^"]*\)",/\1/')
+        ERROR_MENTION_NAME=$(echo "$CONFIG" | grep -oP '"ERROR_MENTION_NAME":.*?[^\\]",' | sed 's/"ERROR_MENTION_NAME":"\([^"]*\)",/\1/')
+        SUCCESS_MENTION_ID=$(echo "$CONFIG" | grep -oP '"SUCCESS_MENTION_ID":.*?[^\\]",' | sed 's/"SUCCESS_MENTION_ID":"\([^"]*\)",/\1/')
+        SUCCESS_MENTION_NAME=$(echo "$CONFIG" | grep -oP '"SUCCESS_MENTION_NAME":.*?[^\\]",' | sed 's/"SUCCESS_MENTION_NAME":"\([^"]*\)",/\1/')
+
+        # Get the GitHub workflow run URL
+        JOB_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+        
+        # Get the commit information from environment variables
+        COMMIT_HASH=$COMMIT_HASH
+        BRANCH_NAME=$BRANCH_NAME
+        
+        # Get the repository URL
+        REPO_URL="[${{ github.repository }}](${{ github.event.repository.html_url }})"
+        
+        # Get the build number
+        BUILD_NUMBER="${{ github.run_number }}"
+        
+        # Determine the job status from environment variables
+        STATUS=$STATUS
+        
+        # Determine the color and mentioned ID/Name based on status
+        if [ "$STATUS" == "FAIL" ]; then
+          status="FAIL ❌"
+          color="attention"
+          mentionedId="$ERROR_MENTION_ID"
+          mentionedName="$ERROR_MENTION_NAME"
+        else
+          status="PASS ✅"
+          color="good"
+          mentionedId="$SUCCESS_MENTION_ID"
+          mentionedName="$SUCCESS_MENTION_NAME"
+        fi
+        
+        # Generate the payload for the notification
+        payload='{
+          "type": "message",
+          "attachments": [
+            {
+              "contentType": "application/vnd.microsoft.card.adaptive",
+              "content": {
+                "type": "AdaptiveCard",
+                "body": [
+                  {
+                    "type": "TextBlock",
+                    "text": "<at>'"$mentionedName"'</at>",
+                    "color": "'"$color"'"
+                  },
+                  {
+                    "type": "TextBlock",
+                    "text": "**Job Name:** '"${{ inputs.action-name }}"'",
+                    "color": "'"$color"'"
+                  },
+                  {
+                    "type": "TextBlock",
+                    "text": "**Job URL:** [View Job]('"$JOB_URL"')",
+                    "color": "'"$color"'"
+                  },
+                  {
+                    "type": "TextBlock",
+                    "text": "**Status:** '"$STATUS"'",
+                    "color": "'"$color"'"
+                  },
+                  {
+                    "type": "TextBlock",
+                    "text": "**Repository URL:** '"$REPO_URL"'",
+                    "color": "'"$color"'"
+                  },
+                  {
+                    "type": "TextBlock",
+                    "text": "**Build Number:** '"$BUILD_NUMBER"'",
+                    "color": "'"$color"'"
+                  },
+                  {
+                    "type": "TextBlock",
+                    "text": "**Branch Name:** '"$BRANCH_NAME"'",
+                    "color": "'"$color"'"
+                  },
+                  {
+                    "type": "TextBlock",
+                    "text": "**Latest Commit:** '"$COMMIT_HASH"'",
+                    "color": "'"$color"'"
+                  }
+                ],
+                "msteams": {
+                  "entities": [
+                    {
+                      "type": "mention",
+                      "text": "<at>'"$mentionedName"'</at>",
+                      "mentioned": {
+                        "id": "'"$mentionedId"'",
+                        "name": "'"$mentionedName"'"
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }'
+        
+        # Send the payload to Microsoft Teams
+        echo "$payload" | curl -X POST -H 'Content-Type: application/json' -d @- 'https://amdcloud.webhook.office.com/webhookb2/133d4f16-689b-4281-a94b-44725b948c77@3dd8961f-e488-4e60-8e11-a82d994e183d/IncomingWebhook/20c43fc799fd49e9813582813c638323/f9e22351-f1c9-494f-88c5-8e04accf2ffe'
