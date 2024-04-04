@@ -18,7 +18,7 @@ runs:
       id: commit_info
       run: |
         COMMIT_HASH=$(git rev-parse HEAD)
-        BRANCH_NAME=$(git ls-remote --heads https://github.com/sreeharsha-alluri/Latest_GHA.git | grep -w "refs/heads/dev" | grep -vw "dev-ci-test" | awk '{print $2}' | awk -F '/' '{print $NF}')
+        BRANCH_NAME=${GITHUB_REF#refs/heads/} # Extract branch name directly
         echo "COMMIT_HASH=${COMMIT_HASH}" >> $GITHUB_ENV
         echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_ENV
 
@@ -37,7 +37,7 @@ runs:
     - name: Determine job status
       shell: bash
       run: |
-        if [ ${{ job.status }} == "failure" ]; then
+        if [[ "${{ job.status }}" == "failure" ]]; then
           echo "STATUS=FAIL" >> $GITHUB_ENV
         else
           echo "STATUS=PASS" >> $GITHUB_ENV
@@ -52,7 +52,7 @@ runs:
         
         # Get the commit information from environment variables
         COMMIT_HASH="${GITHUB_SHA::8}" # Extracting first 8 characters of the SHA
-        BRANCH_NAME="${GITHUB_REF##*/}" # Extracting branch name from the ref
+        BRANCH_NAME="${GITHUB_REF#refs/heads/}" # Extracting branch name directly
         
         # Get the repository URL
         REPO_URL="[${{ github.repository }}](${{ github.event.repository.html_url }})"
