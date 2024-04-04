@@ -14,7 +14,6 @@ runs:
       uses: actions/checkout@v2
 
     - name: Read configurations from config.json
-      shell: bash
       id: read_config
       run: |
         CONFIG=$(cat .github/config.json)
@@ -47,8 +46,8 @@ runs:
         JOB_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
         
         # Get the commit information from environment variables
-        COMMIT_HASH=$COMMIT_HASH
-        BRANCH_NAME=$BRANCH_NAME
+        COMMIT_HASH="${GITHUB_SHA::8}" # Extracting first 8 characters of the SHA
+        BRANCH_NAME="${GITHUB_REF##*/}" # Extracting branch name from the ref
         
         # Get the repository URL
         REPO_URL="[${{ github.repository }}](${{ github.event.repository.html_url }})"
