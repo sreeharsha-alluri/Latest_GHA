@@ -26,6 +26,7 @@ jobs:
         run: exit 1
 
       - name: Run the Composite Action
+        if: always()
         uses: ./.github/actions/build_and_notify
         with:
           action-name: ${{ github.workflow }}
